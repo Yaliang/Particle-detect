@@ -1,0 +1,54 @@
+.touch-scroll-bar {
+    height: 50px;
+    float: right;
+    width: 2px;
+    border-radius: 2px;
+    background-color: rgba(0,0,0,0.39);
+    position: fixed;
+    right: 2px;
+    z-index: 100;
+    display: none;
+}
+
+
+.banner-front {
+    z-index: 99;
+}
+
+.extra-small {
+    font-size: 62%;
+}
+
+.home-body-pad {
+    padding-top: 15px;
+    padding-bottom: 15px;
+    border: 1px solid #fff;
+    text-shadow: 0 0 0;
+}
+
+.home-body-pad:hover {
+    color:#fff;
+    background-color:#563d7c;
+}
+
+.header-btn {
+    border: 0 solid #fff;
+    box-shadow: none;
+    background-color: rgba(0,0,0,0)!important;
+}
+
+.empty-contact {
+    display: none !important;
+}
+
+.empty {
+    display: none !important;
+}
+
+.ui-page-active {
+    z-index: 98;
+}
+
+.header-btn {
+    font-family: "Open Sans","Helvetica Neue",Helvetica,Arial,sans-serif;
+}
