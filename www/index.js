@@ -1,5 +1,11 @@
 Parse.initialize("7JSMjdDlgmtsWgGY5LOPMm3tCluhAo7Wmuu9MLpf", "75P9wy6X6guG9HRUvMxcVueLjZ93ljY56z3jrgAN");
 
+$(document).on("mobileinit", function()  {
+  $.mobile.ajaxEnabled = true;
+  $.support.cors = true;
+  $.mobile.allowCrossDomainPages = true;
+});
+
 DataService2 = {
 	loadNewPatch: function(data, options) {
 		var Patches = Parse.Object.extend("Patches")
