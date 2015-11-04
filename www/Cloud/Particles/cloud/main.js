@@ -33,5 +33,3 @@ Parse.Cloud.define('getTutorial', function(request, response) {
 			})
 	}
 })
-
-require('cloud/app.js')
