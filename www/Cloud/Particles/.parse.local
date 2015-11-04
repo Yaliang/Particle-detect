@@ -1,0 +1,10 @@
+{
+  "applications": {
+    "Particles": {
+      "applicationId": "7JSMjdDlgmtsWgGY5LOPMm3tCluhAo7Wmuu9MLpf"
+    },
+    "_default": {
+      "link": "Particles"
+    }
+  }
+}

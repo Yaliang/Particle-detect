@@ -1125,7 +1125,6 @@
 
 	/**
 	 * Faculty entry for the pageTransition module
-	 * @param  {String} selector The selector for the applied element
 	 * @param  {Object} options  The setup for the transition
 	 * @return {Instant/Object}  Created instant of the pageTransition module
 	 */

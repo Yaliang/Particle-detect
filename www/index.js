@@ -1,6 +1,6 @@
 Parse.initialize("7JSMjdDlgmtsWgGY5LOPMm3tCluhAo7Wmuu9MLpf", "75P9wy6X6guG9HRUvMxcVueLjZ93ljY56z3jrgAN");
 
-DataService = {
+DataService2 = {
 	loadNewPatch: function(data, options) {
 		var Patches = Parse.Object.extend("Patches")
 		var query = new Parse.Query(Patches)
@@ -199,13 +199,15 @@ user = {
 
 ajaxloader = {
 	callback: false,
+	rootpath: "http://crowdsourcinghelpful.parseapp.com/pages/",
+	// rootpath: "./pages/",
 	/**
 	 * the entry to request a get function
 	 * @param  {String} id The id of file, it normally comes with the form "./<id>.html"
 	 * @return {[type]}    [description]
 	 */
 	get : function(id) {
-		var href = "./pages/"+id+".html"
+		var href = this.rootpath+id+".html"
 		ajaxloader.done = false
 		$.get(href, function(data) {
 			ajaxloader.extract(data)

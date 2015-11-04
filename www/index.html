@@ -37,6 +37,7 @@
     <!-- Latest compiled and minified JavaScript -->
     <script src="./script/bootstrap/js/bootstrap.min.js"></script>
     <script src="./script/j2m/script/pageTransition.js"></script>
+    <script src="./script/dataservice/dataservice.js"></script>
     <script type="text/javascript" src="./script/parse/parse-1.6.0.min.js"></script>
     <script type="text/javascript" src="./index.js"></script>
 </head>
@@ -57,8 +58,10 @@
 
         pt = pageTransition.init({
             ajaxloader: ajaxloader,
-            initPage: "patch"
+            initPage: "welcome"
         })
+
+        ds = DataService.init()
 
     </script>
 
