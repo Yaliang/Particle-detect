@@ -21,54 +21,10 @@
 		/** set the element array to indicate the center of PMs */
 		this.points = []
 
-		/** the undo function */
-		this.undo = []
-
-		/** the redo function */
-		this.redo = []
-
-		/** bind the keypress ctrl-z */
-		$(window).keypress(function(event) {
-			if (event.ctrlKey && event.which == 26) {
-				window.particle.PatchJS.undoCall()
-			}
-		})
-
-		/** bind the keypress ctrl-y */
-		$(window).keypress(function(event) {
-			if (event.ctrlKey && event.which == 25) {
-				window.particle.PatchJS.redoCall()
-			}
-		})
+		/** set the undo redo instance */
+		this.undoredo = undoredo.init()
 
 		return this
-	}
-
-	/**
-	 * The function to handle the undo calls
-	 * @return {[type]} [description]
-	 */
-	PatchJS.prototype.undoCall = function() {
-		if (this.undo.length == 0) {
-			return
-		}
-
-		var undoObj = this.undo.pop()
-		undoObj.func(undoObj.args)
-
-	}
-
-	/**
-	 * The function to handle the redo calls
-	 * @return {[type]} [description]
-	 */
-	PatchJS.prototype.redoCall = function() {
-		if (this.redo.length == 0) {
-			return
-		}
-
-		var redoObj = this.redo.pop()
-		redoObj.func(redoObj.args)
 	}
 
 	/**
@@ -88,15 +44,14 @@
 		}
 		if (touches.length > 1) {
 			// handle the situation that there are more than one touch on the screen
-			console.log('only one touch allowed. Left no response.')
+			// console.log('only one touch allowed. Left no response.')
 			return 
-		} else {
-			window.particle.PatchJS.markStart({
-				target: $(event.target),
-				clientX: touches[0].clientX,
-				clientY: touches[0].clientY
-			})
 		}
+		window.particle.PatchJS.markStart({
+			target: $(event.target),
+			clientX: touches[0].clientX,
+			clientY: touches[0].clientY
+		})
 	}
 
 	/**
@@ -141,44 +96,44 @@
 		}
 		if (touches.length > 1) {
 			// handle the situation that there are more than one touch on the screen
-			console.log('only one touch allowed. Left no response.')
+			// console.log('only one touch allowed. Left no response.')
 			return
 		}
+		var clientX = touches[0].clientX
+		var clientY = touches[0].clientY
 
 		var args = {
 			target: $(window.particle.PatchJS.patchDOM),
 			marker: $(event.target).parent(),
-			clientX: touches[0].clientX,
-			clientY: touches[0].clientY
+			clientX: clientX,
+			clientY: clientY
+		}
+
+		var offset = args.target.offset()
+		var displayx = args.clientX - offset.left
+		var displayy = args.clientY - offset.top
+		var displayHeight = 1.0 * args.target.height()
+		var displayWidth = 1.0 * args.target.width()
+		if (displayx < 0 || displayy < 0 || displayx > displayWidth || displayy > displayHeight) {
+			return
 		}
 
 		/** push the undo function into the array */
-		window.particle.PatchJS.redo = []
-		window.particle.PatchJS.undo.push({
-			func: function(args) {
-				window.particle.PatchJS.redo.push({
-					func: function(args) {
-						args.marker.attr('data-real-x',args.realx).attr('data-real-y', args.realy)
-						args.marker.css('left',args.left).css('top',args.top)
-					},
-					args: {
-						marker: args.marker,
-						realx: args.marker.attr('data-real-x'),
-						realy: args.marker.attr('data-real-y'),
-						left: args.marker.css('left'),
-						top: args.marker.css('top')
-					}
-				})
+		window.particle.PatchJS.undoredo.pushUndo({
+			recover: function(args) {
 				args.marker.attr('data-real-x',args.realx).attr('data-real-y', args.realy)
 				args.marker.css('left',args.left).css('top',args.top)
 			},
+			redo: window.particle.PatchJS.onTouchMoveStart,
 			args: {
+				originalArgs: event,
 				marker: args.marker,
 				realx: args.marker.attr('data-real-x'),
 				realy: args.marker.attr('data-real-y'),
 				left: args.marker.css('left'),
 				top: args.marker.css('top')
-			}
+			},
+			instance: window.particle.PatchJS.undoredo
 		})
 
 		window.particle.PatchJS.markerMove(args)
@@ -193,6 +148,7 @@
 	 * @return {[type]}       [description]
 	 */
 	PatchJS.prototype.onClickMoveStart = function(event) {
+		// console.log(event)
 		event.preventDefault()
 		event.stopPropagation()
 		var click = event.originalEvent
@@ -203,40 +159,41 @@
 		if (click.buttons == 0) {
 			return
 		}
+		var clientX = click.clientX
+		var clientY = click.clientY
 
 		var args = {
 			target: $(window.particle.PatchJS.patchDOM),
 			marker: $(event.target).parent(),
-			clientX: click.clientX,
-			clientY: click.clientY
+			clientX: clientX,
+			clientY: clientY
 		}
 
-		window.particle.PatchJS.redo = []
-		window.particle.PatchJS.undo.push({
-			func: function(args) {
-				window.particle.PatchJS.redo.push({
-					func: function(args) {
-						args.marker.attr('data-real-x',args.realx).attr('data-real-y', args.realy)
-						args.marker.css('left',args.left).css('top',args.top)
-					},
-					args: {
-						marker: args.marker,
-						realx: args.marker.attr('data-real-x'),
-						realy: args.marker.attr('data-real-y'),
-						left: args.marker.css('left'),
-						top: args.marker.css('top')
-					}
-				})
+		var offset = args.target.offset()
+		var displayx = args.clientX - offset.left
+		var displayy = args.clientY - offset.top
+		var displayHeight = 1.0 * args.target.height()
+		var displayWidth = 1.0 * args.target.width()
+		if (displayx < 0 || displayy < 0 || displayx > displayWidth || displayy > displayHeight) {
+			return
+		}
+
+		/** push the undo function into the array */
+		window.particle.PatchJS.undoredo.pushUndo({
+			recover: function(args) {
 				args.marker.attr('data-real-x',args.realx).attr('data-real-y', args.realy)
 				args.marker.css('left',args.left).css('top',args.top)
 			},
+			redo: window.particle.PatchJS.onClickMoveStart,
 			args: {
+				originalArgs: event,
 				marker: args.marker,
 				realx: args.marker.attr('data-real-x'),
 				realy: args.marker.attr('data-real-y'),
 				left: args.marker.css('left'),
 				top: args.marker.css('top')
-			}
+			},
+			instance: window.particle.PatchJS.undoredo
 		})
 
 		window.particle.PatchJS.markerMove(args)
@@ -259,16 +216,36 @@
 		}
 		if (touches.length > 1) {
 			// handle the situation that there are more than one touch on the screen
-			console.log('only one touch allowed. Left no response.')
+			// console.log('only one touch allowed. Left no response.')
 			return
-		} else {
-			window.particle.PatchJS.markerMove({
-				target: $(window.particle.PatchJS.patchDOM),
-				marker: $(event.target).parent(),
-				clientX: touches[0].clientX,
-				clientY: touches[0].clientY
-			})
 		}
+		var clientX = touches[0].clientX
+		var clientY = touches[0].clientY
+
+		var args = {
+			target: $(window.particle.PatchJS.patchDOM),
+			marker: $(event.target).parent(),
+			clientX: clientX,
+			clientY: clientY
+		}
+
+		var offset = args.target.offset()
+		var displayx = args.clientX - offset.left
+		var displayy = args.clientY - offset.top
+		var displayHeight = 1.0 * args.target.height()
+		var displayWidth = 1.0 * args.target.width()
+		if (displayx < 0 || displayy < 0 || displayx > displayWidth || displayy > displayHeight) {
+			return
+		}
+
+		window.particle.PatchJS.undoredo.replaceUndo({
+			originalArgs: event,
+			instance: window.particle.PatchJS.undoredo
+		})
+		
+		window.particle.PatchJS.markerMove(args)
+
+		
 	}
 
 	/**
@@ -290,12 +267,31 @@
 		if (click.buttons == 0) {
 			return
 		}
-		window.particle.PatchJS.markerMove({
+		var clientX = click.clientX
+		var clientY = click.clientY
+
+		var args = {
 			target: $(window.particle.PatchJS.patchDOM),
 			marker: $(event.target).parent(),
-			clientX: click.clientX,
-			clientY: click.clientY
+			clientX: clientX,
+			clientY: clientY
+		}
+
+		var offset = args.target.offset()
+		var displayx = args.clientX - offset.left
+		var displayy = args.clientY - offset.top
+		var displayHeight = 1.0 * args.target.height()
+		var displayWidth = 1.0 * args.target.width()
+		if (displayx < 0 || displayy < 0 || displayx > displayWidth || displayy > displayHeight) {
+			return
+		}
+
+		window.particle.PatchJS.undoredo.replaceUndo({
+			originalArgs: event,
+			instance: window.particle.PatchJS.undoredo
 		})
+
+		window.particle.PatchJS.markerMove(args)
 	}
 
 	/**
@@ -308,21 +304,21 @@
 	 */
 	PatchJS.prototype.markStart = function(args) {
 		/* The coordinate system.
-	     * # # # # # # # # # # 
-	     * # o ------------------------------- x
-	     * # |     ________________________
-	     * # |    |(x,y)                   |
-	     * # |    |                        |
-	     * # |    |                        |
-	     * # |    |________________________|     
-	     * # |                              (x+width, y+height)
-	     * # |
-	     * # y
-	     * #
-	     */
+		 * # # # # # # # # # # 
+		 * # o ------------------------------- x
+		 * # |     ________________________
+		 * # |    |(x,y)                   |
+		 * # |    |                        |
+		 * # |    |                        |
+		 * # |    |________________________|     
+		 * # |                              (x+width, y+height)
+		 * # |
+		 * # y
+		 * #
+		 */
 
-	    var touchx = args.clientX
-	    var touchy = args.clientY
+		var touchx = args.clientX
+		var touchy = args.clientY
 		var offset = args.target.offset()
 		var displayx = touchx - offset.left
 		var displayy = touchy - offset.top
@@ -332,12 +328,33 @@
 		var displayWidth = 1.0 * args.target.width()
 		var realx = Math.round(1.0 * displayx * realHeight / displayHeight)
 		var realy = Math.round(1.0 * displayy * realWidth / displayWidth)
-		console.log('start event')
-		console.log("in display image size, x: %d, y: %d", displayx, displayy)
-		console.log("in real image size, x: %d, y: %d", realx, realy)
+		// console.log('start event')
+		// console.log("in display image size, x: %d, y: %d", displayx, displayy)
+		// console.log("in real image size, x: %d, y: %d", realx, realy)
 
 		/** create a new point center element */
 		var newcenter = $(".pointCenter.hidden").clone(true)
+		/** push the undo function into the array */
+		window.particle.PatchJS.undoredo.pushUndo({
+			recover: function(args) {
+				args.newcenter.hide()
+				var newcenterIndex = window.particle.PatchJS.points.indexOf(args.newcenter[0])
+				console.log(newcenterIndex)
+				window.particle.PatchJS.points.splice(newcenterIndex, 1)
+			},
+			redo: function(args) {
+				args.newcenter.show()
+				window.particle.PatchJS.points.push(args.newcenter[0])
+				window.particle.PatchJS.undoredo.pushUndo(args.undoOptions)
+			},
+			args: {
+				originalArgs: args,
+				newcenter: newcenter,
+				useAllArgs: true,
+				passOptions: true
+			},
+			instance: window.particle.PatchJS.undoredo
+		})
 		newcenter.attr('data-real-x',realx).attr('data-real-y', realy)
 		newcenter.removeClass('hidden')
 		newcenter.css('left',touchx).css('top',touchy)
@@ -346,22 +363,8 @@
 		newcenter.children('img').bind("mousedown", window.particle.PatchJS.onClickMoveStart)
 		newcenter.children('img').bind("mousemove", window.particle.PatchJS.onClickMove)
 		$(".pointCenter.hidden").after(newcenter)
-		window.particle.PatchJS.points.push(newcenter)
+		window.particle.PatchJS.points.push(newcenter[0])
 
-		window.particle.PatchJS.redo = []
-		window.particle.PatchJS.undo.push({
-			func: function(args) {
-				var pointELE = window.particle.PatchJS.points.pop()
-				window.particle.PatchJS.redo.push({
-					func: function(args) {
-						args.show()
-					},
-					args: pointELE
-				})
-				pointELE.hide()
-			},
-			args: args
-		})
 	}
 
 	/**
@@ -375,21 +378,21 @@
 	 */
 	PatchJS.prototype.markerMove = function(args) {
 		/* The coordinate system.
-	     * # # # # # # # # # # 
-	     * # o ------------------------------- x
-	     * # |     ________________________
-	     * # |    |(x,y)                   |
-	     * # |    |                        |
-	     * # |    |                        |
-	     * # |    |________________________|     
-	     * # |                              (x+width, y+height)
-	     * # |
-	     * # y
-	     * #
-	     */
+		 * # # # # # # # # # # 
+		 * # o ------------------------------- x
+		 * # |     ________________________
+		 * # |    |(x,y)                   |
+		 * # |    |                        |
+		 * # |    |                        |
+		 * # |    |________________________|     
+		 * # |                              (x+width, y+height)
+		 * # |
+		 * # y
+		 * #
+		 */
 
-	    var touchx = args.clientX
-	    var touchy = args.clientY
+		var touchx = args.clientX
+		var touchy = args.clientY
 		var offset = args.target.offset()
 		var displayx = touchx - offset.left
 		var displayy = touchy - offset.top
@@ -399,9 +402,9 @@
 		var displayWidth = 1.0 * args.target.width()
 		var realx = Math.round(1.0 * displayx * realHeight / displayHeight)
 		var realy = Math.round(1.0 * displayy * realWidth / displayWidth)
-		console.log('move event')
-		console.log("in display image size, x: %d, y: %d", displayx, displayy)
-		console.log("in real image size, x: %d, y: %d", realx, realy)
+		// console.log('move event')
+		// console.log("in display image size, x: %d, y: %d", displayx, displayy)
+		// console.log("in real image size, x: %d, y: %d", realx, realy)
 
 		// console.log(args.marker)
 		/** modify the point center element */
