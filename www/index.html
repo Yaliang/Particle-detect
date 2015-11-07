@@ -36,10 +36,11 @@
     <!-- <link rel="stylesheet" href="./script/bootstrap/css/bootstrap-theme.min.css"> -->
     <!-- Latest compiled and minified JavaScript -->
     <script src="./script/bootstrap/js/bootstrap.min.js"></script>
+    <script src="./script/parse/parse-1.6.7.min.js"></script>
     <script src="./script/j2m/script/pageTransition.js"></script>
     <script src="./script/dataservice/dataservice.js"></script>
-    <script type="text/javascript" src="./script/parse/parse-1.6.0.min.js"></script>
-    <script type="text/javascript" src="./index.js"></script>
+    <script src="./script/taskJS/patchJS.js"></script>
+    <script src="./index.js"></script>
 </head>
 
 <body>
@@ -60,8 +61,6 @@
             ajaxloader: ajaxloader,
             initPage: "welcome"
         })
-
-        ds = DataService.init()
 
     </script>
 
