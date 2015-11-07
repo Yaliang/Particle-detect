@@ -244,6 +244,11 @@ ajaxloader = {
 		var contentBackgroundColor = data.substring(data.indexOf("<contentBackgroundColor>") + 24, data.indexOf("</contentBackgroundColor>"))
 		if (contentBackgroundColor != null) {
 			obj.contentAttr.backgroundColor = contentBackgroundColor
+			if (contentBackgroundColor == "black") {
+				$('meta[name=apple-mobile-web-app-status-bar-style]').attr('content', 'black');
+			} else {
+				$('meta[name=apple-mobile-web-app-status-bar-style]').attr('content', 'black-translucent');
+			}
 		}
 
 		var footer = data.substring(data.indexOf("<footer>") + 8, data.indexOf("</footer>"))
