@@ -124,7 +124,10 @@
 		}, {
 			success: function(nextStage) {
 				if (options.callback) {
-					options.callback(nextStage)
+					for (var key in nextStage) {
+						options[key] = nextStage[key]
+					}
+					options.callback(options)
 				}
 			},
 			error: function(error) {
@@ -171,7 +174,10 @@
 		}, {
 			success: function(taskObj) {
 				if (options.callback) {
-					options.callback(taskObj)
+					for (var key in taskObj) {
+						options[key] = taskObj[key]
+					}
+					options.callback(options)
 				}
 			},
 			error: function(error) {
@@ -217,7 +223,10 @@
 		}, {
 			success: function(state) {
 				if (options.callback) {
-					options.callback(state)
+					for (var key in state) {
+						options[key] = state[key]
+					}
+					options.callback(options)
 				}
 			},
 			error: function(error) {

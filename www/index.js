@@ -6,32 +6,6 @@ $(document).on("mobileinit", function()  {
   $.mobile.allowCrossDomainPages = true;
 });
 
-DataService2 = {
-	loadNewPatch: function(data, options) {
-		var Patches = Parse.Object.extend("Patches")
-		var query = new Parse.Query(Patches)
-
-		query.count({
-			success: function(count) {
-				var randomSkipNumber=Math.floor(Math.random()*count)
-				var query = new Parse.Query(Patches)
-				query.skip(randomSkipNumber)
-				query.limit(1)
-				query.ascending("createdAt")
-
-				query.find({
-					success: function(patchesObj) {
-						if (options.callback) {
-							options.callback(patchesObj[0], options)
-						}
-					}
-				})
-
-			}
-		})
-	}
-}
-
 user = {
 	id: "",
 	username: "",
@@ -205,8 +179,8 @@ user = {
 
 ajaxloader = {
 	callback: false,
-	rootpath: "http://crowdsourcinghelpful.parseapp.com/pages/",
-	// rootpath: "./pages/",
+	// rootpath: "http://crowdsourcinghelpful.parseapp.com/pages/",
+	rootpath: "./pages/",
 	/**
 	 * the entry to request a get function
 	 * @param  {String} id The id of file, it normally comes with the form "./<id>.html"
@@ -286,30 +260,6 @@ ajaxloader = {
 	},
 }
 
-patchJS = {
-	onTouchStart: function(event) {
-		var touches = event.originalEvent.targetTouches
-		console.log(touches)
-		console.log(patchJS.patchEle)
-		if (touches.length > 1) {
-
-			$.mobile.loading( 'show', {
-				text: "Pending", 
-				textVisible: "true", 
-				html: "<h1 id='loader-text'>Only one finger touch the image</h1><div style='position:fixed; top:0; left:0; width:100vw; height: 100vh; background-color:black; opacity:0.75' onclick='$.mobile.loading(\"hide\")'></div>"
-			})
-		} else {
-			var offset = $(event.target).offset()
-			var touchx = touches[0].clientX
-			var touchy = touches[0].clientY
-			var imagex = touchx - offset.left
-			var imagey = touchy - offset.top
-			var imageHeight = 1.0 * $(event.target).attr("data-height")
-			var imageWidth = 1.0 * $(event.target).attr("data-width")
-			var displayHeight = 1.0 * $(event.target).height()
-			var displayWidth = 1.0 * $(event.target).width()
-			console.log("imagex: %d, imagey: %d", imagex, imagey)
-			console.log("realx: %d, realy: %d", Math.round(1.0 * imagex * imageWidth / displayWidth), Math.round(1.0 * imagey * imageHeight / displayHeight))
-		}
-	}
-}
+window.particle = {}
+window.particle.DataService = DataService.init()
+window.particle.PatchJS = PatchJS.init()

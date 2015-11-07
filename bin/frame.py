@@ -13,7 +13,7 @@ def checkContent(args):
 
     # set some metrics
     darkThreshold = 80
-    diffThreshold = 50
+    diffThreshold = 85
 
     # check if it is too dark
     if np.max(img) < darkThreshold:
@@ -27,38 +27,37 @@ def checkContent(args):
 
 
 def clip(args):
-    """ clip an image for (x,y) to (x+height, y+width) """
+    """ clip an image for (x,y) to (x+width, y+height) """
     # args = [img, x, y, height, width]
     # # # # # # # # # # 
-    # o ------------------------------- y
+    # o ------------------------------- x
     # |     ________________________
     # |    |(x,y)                   |
     # |    |                        |
     # |    |                        |
     # |    |________________________|     
-    # |                              (x+height, y+width)
+    # |                              (x+width, y+height)
     # |
-    # x
+    # y
     #
     
     # parse data
-    img, x, y, height, width = args
+    img, x, y, width, height = args
 
 
-    # check if the (x+height, y+width) is out of range
+    # check if the (x+width, y+height) is out of range
     lx, ly, dim = img.shape
-    if x+height > lx or y+width > ly:
+    if x+width > lx or y+height > ly:
         return [False, np.array([], dtype='int32'), x, y]
 
-    p = img[x:x+height, y:y+width, :3]
+    p = img[x:x+width, y:y+height, :3]
 
     flag, message = checkContent([p])
 
     if flag:
         return [True, p, x, y]
     else:
-        if message == "difference is too small":
-            print "Too small at:" + str(x) + "," + str(y)
+        print "At "+str(x)+","+str(y)+" "+message
 
         return [False, p, x, y]
 
@@ -67,7 +66,7 @@ def uploadPatch(args):
         build the corresponding patches object,
         and delete the file"""
     ## parse arguments
-    clipImg, fileName, seriesID, frameID, x, y, height, width, frameObjectId = args
+    clipImg, fileName, positionXAtFrame, positionYAtFrame, sizeWidth, sizeHeight, frameObjectId = args
 
     ## save the data as file
     misc.imsave(fileName, clipImg)
@@ -92,20 +91,18 @@ def uploadPatch(args):
     parseFile = result[unicode('name')]
 
     # build the corresponding patch object
-    connection.request('POST', '/1/classes/Patches', json.dumps({
-        "seriesID": seriesID,
-        "frameID": frameID,
-        "x": x,
-        "y": y,
-        "height": height,
-        "width": width,
+    connection.request('POST', '/1/classes/Patch', json.dumps({
+        "positionXAtFrame": positionXAtFrame,
+        "positionYAtFrame": positionYAtFrame,
+        "sizeWidth": sizeWidth,
+        "sizeHeight": sizeHeight,
         "image": {
             "name": parseFile,
             "__type": "File"
         },
-        "frameObject": {
+        "frame": {
             "__type": "Pointer",
-            "className": "Frames",
+            "className": "Frame",
             "objectId": frameObjectId
         }
     }), {
@@ -122,7 +119,7 @@ def processFrame(args):
     """ upload the images to parse,
         build the corresponding frames object"""
     ## parse arguments
-    filePath, seriesID, frameID, height, width = args
+    filePath, seriesID, order, sizeWidth, sizeHeight = args
 
     ## parse the image from file
     img = misc.imread(filePath)
@@ -147,9 +144,9 @@ def processFrame(args):
     parseFile = result[unicode('name')]
 
     # build the corresponding frame object
-    connection.request('POST', '/1/classes/Frames', json.dumps({
-        "seriesID": seriesID,
-        "frameID": frameID,
+    connection.request('POST', '/1/classes/Frame', json.dumps({
+        # "seriesID": seriesID,
+        "order": order,
         "image": {
             "name": parseFile,
             "__type": "File"
@@ -165,14 +162,14 @@ def processFrame(args):
     frameObjectId = result[unicode("objectId")]
 
     ## get the shape
-    ix, iy, dim = img.shape
+    iy, ix, dim = img.shape
 
     ## set up multiprocessing
     pool = Pool(processes = 4)
     args = []
-    for i in range(0, ix, height/2):
-        for j in range(0, iy, width/2):
-            args_unit = [img, seriesID, frameID, i, j, height, width, frameObjectId]
+    for positionXAtFrame in range(0, ix, sizeWidth/2):
+        for positionYAtFrame in range(0, iy, sizeHeight/2):
+            args_unit = [img, positionXAtFrame, positionYAtFrame, sizeWidth, sizeHeight, frameObjectId]
             args.append(args_unit)
 
     pool.map(multiProcessAssis, args)
@@ -182,13 +179,13 @@ def processFrame(args):
 def multiProcessAssis(args):
     """ assistant function to process the frame in multi processes"""
     ## parse data
-    img, seriesID, frameID, i, j, height, width, frameObjectId = args
+    img, positionXAtFrame, positionYAtFrame, sizeWidth, sizeHeight, frameObjectId = args
     ## clip the image
-    flag, clipImg, x, y = clip([img, i, j, height, width])
+    flag, clipImg, positionXAtFrame, positionYAtFrame = clip([img, positionXAtFrame, positionYAtFrame, sizeWidth, sizeHeight])
     ## uploads
     if flag:
-        fileName = str(seriesID)+'_'+str(frameID)+'_'+str(i)+'_'+str(j)+'.png'
-        uploadPatch([clipImg, fileName, seriesID, frameID, x, y, height, width, frameObjectId])
+        fileName = str(positionXAtFrame)+'_'+str(positionYAtFrame)+'.png'
+        uploadPatch([clipImg, fileName, positionXAtFrame, positionYAtFrame, sizeWidth, sizeHeight, frameObjectId])
 
 
 if __name__ == "__main__":
@@ -196,11 +193,11 @@ if __name__ == "__main__":
 
     ## set up settings
     seriesID = 1 
-    frameID = 1
-    height = 100
-    width = 100
+    order = 1
+    sizeWidth = 100
+    sizeHeight = 100
 
     ## process frame
-    filePath = "frame"+str(frameID)+".bmp"
-    processFrame([filePath, seriesID, frameID, height, width])
+    filePath = "frame"+str(order)+".bmp"
+    processFrame([filePath, seriesID, order, sizeWidth, sizeHeight])
 

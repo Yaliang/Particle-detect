@@ -1,0 +1,98 @@
+<pageid>taskpatch</pageid>
+<title>Task</title>
+<header>
+	<style type="text/css">
+		.full_screen_black {
+			position: fixed;
+			top: 0;
+			left: 0;
+			width: 100vw;
+			height: 100vh;
+			z-index: 1000;
+			background-color: black;
+		}
+		.pointCenter {
+			z-index: 2000;
+			position: fixed;
+			margin-left: -15px;
+    		margin-top: -15px;
+		}
+		@keyframes fadeIn {
+			from {
+				opacity: 0;
+			}
+			to {
+				opacity: 1;
+			}
+		}
+		@keyframes fadeHalf {
+			from {
+				opacity: 1;
+			}
+			to {
+				opacity: 0.8;
+			}
+		}
+		@keyframes fadeHalfOut {
+			from {
+				opacity: 0.8;
+			}
+			to {
+				opacity: 0;
+			}
+		}
+		@keyframes fadeOut {
+			from {
+				opacity: 1;
+			}
+			to {
+				opacity: 0;
+			}
+		}
+		@keyframes floatUp {
+			from {
+				top: 50vh;
+			}
+			to {
+				top: 45vh;
+			}
+		}
+		@keyframes floatTop {
+			from {
+				top: 45vh;
+			}
+			to {
+				top: 35vh;
+			}
+		}
+		@keyframes floatTopOut {
+			from {
+				top: 35vh;
+			}
+			to {
+				top: 0vh;
+			}
+		}
+		@keyframes floatOut {
+			from {
+				top: 42vh;
+			}
+			to {
+				top: 10vh;
+			}
+		}
+	</style>
+</header>
+<contentBackgroundColor>white</contentBackgroundColor>
+<main>
+	<div id='patchImage' class='full_screen_black'>
+	</div>
+	<div class='pointCenter hidden'>
+		<img src='./image/red-point-31.png' width='31' height='31'/>
+	</div>
+</main>
+<footer>
+	<script type="text/javascript">
+		window.particle.PatchJS.requestTask()
+	</script>
+</footer>
