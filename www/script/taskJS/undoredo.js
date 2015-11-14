@@ -59,21 +59,21 @@
 
 		/** bind the click and touch event for undo*/
 		for (var i=0; i < this.undoButton.length; i++) {
-			$(this.undoButton[i]).off('mouseup touchend').on('mouseup touchend', this, function(event) {
+			$(this.undoButton[i]).off('touchstart mousedown').on('touchstart mousedown', this, function(event) {
 				event.data.undoCall()
 			})
 		}
 
 		/** bind the click and touch event for redo*/
 		for (var i=0; i < this.redoButton.length; i++) {
-			$(this.redoButton[i]).off('mouseup touchend').on('mouseup touchend', this, function(event) {
+			$(this.redoButton[i]).off('touchstart mousedown').on('touchstart mousedown', this, function(event) {
 				event.data.redoCall()
 			})
 		}
 
 		/** bind the click and touch event for reset*/
 		for (var i=0; i < this.resetButton.length; i++) {
-			$(this.resetButton[i]).off('mouseup touchend').on('mouseup touchend', this, function(event) {
+			$(this.resetButton[i]).off('touchstart mousedown').on('touchstart mousedown', this, function(event) {
 				event.data.resetCall()
 			})
 		}

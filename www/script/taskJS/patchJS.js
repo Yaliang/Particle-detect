@@ -337,7 +337,7 @@
 				$(this).fadeIn()
 
 				/** set the finish button event */
-				$(window.particle.PatchJS.doneSelector).off('touchend mouseup').on('touchend mouseup', function() {
+				$(window.particle.PatchJS.doneSelector).off('touchstart mousedown').on('touchstart mousedown', function() {
 					window.particle.PatchJS.confirmFinish()
 				})
 
@@ -411,11 +411,11 @@
 		}
 		$("#operations").removeClass('floatup').addClass('floatdown')
 		$('#confirm').removeClass('floatdown').addClass('floatup')
-		$('#confirm-cancel').off('touchend mouseup').on('touchend mouseup', function() {
+		$('#confirm-cancel').off('touchstart mousedown').on('touchstart mousedown', function() {
 			$("#confirm").removeClass('floatup').addClass('floatdown')
 			$("#operations").removeClass('floatdown').addClass('floatup')
 		})
-		$('#confirm-ok').off('touchend mouseup').on('touchend mouseup', function() {
+		$('#confirm-ok').off('touchstart mousedown').on('touchstart mousedown', function() {
 			window.particle.PatchJS.submitResult();
 			$("#confirm").removeClass('floatup').addClass('floatdown')
 			$('#operations').removeClass('floatdown')
