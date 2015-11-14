@@ -349,7 +349,7 @@
 				/** set timeout to enable the done button enable */
 				window.particle.PatchJS.doneButtonEnableTimer = setTimeout(function() {
 					$(window.particle.PatchJS.doneSelector).addClass('active')
-				}, 3000)
+				}, 2000)
 			}
 			$(window.particle.PatchJS.doneSelector).removeClass('active')
 			/** reset the undo redo instance */
