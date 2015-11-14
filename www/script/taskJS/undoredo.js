@@ -4,27 +4,79 @@
 	 * in a patch selection task.
 	 */
 	
-	function undoredo() {
+	function undoredo(options) {
+
+		options = options || {}
 
 		/** the undo function */
 		this.undo = []
 
+		/** get the undo element */
+		this.undoButton = options.undoButton || []
+
 		/** the redo function */
 		this.redo = []
 
-		/** bind the keypress ctrl-z */
-		$(window).keypress(this, function(event) {
+		/** get the redo element */
+		this.redoButton = options.redoButton || []
+
+		/** get the reset function */
+		this.resetFunc = options.resetFunc || function(){}
+
+		/** get the reset element */
+		this.resetButton = options.resetButton || []
+
+		/** when no reset available, remove active class */
+		for (var i=0; i < this.resetButton.length; i++) {
+			$(this.resetButton[i]).removeClass('active')
+		}
+
+		/** when no undo available, remove active class */
+		for (var i=0; i < this.undoButton.length; i++) {
+			$(this.undoButton[i]).removeClass('active')
+		}
+		
+		/** when no redo available, remove active class */
+		for (var i=0; i < this.redoButton.length; i++) {
+			$(this.redoButton[i]).removeClass('active')
+		}
+
+		/** bind the keypress event*/
+		$(window).off('keypress').keypress(this, function(event) {
+			/** bind the keypress ctrl-z */
 			if (event.ctrlKey && event.which == 26) {
 				event.data.undoCall()
 			}
-		})
-
-		/** bind the keypress ctrl-y */
-		$(window).keypress(this, function(event) {
+			/** bind the keypress ctrl-y */
 			if (event.ctrlKey && event.which == 25) {
 				event.data.redoCall()
 			}
+			/** bind the keypress ctrl-q */
+			if (event.ctrlKey && event.which == 17) {
+				event.data.resetCall()
+			}
 		})
+
+		/** bind the click and touch event for undo*/
+		for (var i=0; i < this.undoButton.length; i++) {
+			$(this.undoButton[i]).off('mouseup touchend').on('mouseup touchend', this, function(event) {
+				event.data.undoCall()
+			})
+		}
+
+		/** bind the click and touch event for redo*/
+		for (var i=0; i < this.redoButton.length; i++) {
+			$(this.redoButton[i]).off('mouseup touchend').on('mouseup touchend', this, function(event) {
+				event.data.redoCall()
+			})
+		}
+
+		/** bind the click and touch event for reset*/
+		for (var i=0; i < this.resetButton.length; i++) {
+			$(this.resetButton[i]).off('mouseup touchend').on('mouseup touchend', this, function(event) {
+				event.data.resetCall()
+			})
+		}
 
 		return this
 	}
@@ -41,6 +93,57 @@
 		var undoObj = this.undo.pop()
 		undoObj.func(undoObj.args)
 
+		if (this.undo.length == 0) {
+			/** when no undo available, remove active class */
+			for (var i=0; i < this.undoButton.length; i++) {
+				$(this.undoButton[i]).removeClass('active')
+			}
+		}
+	}
+
+
+	/**
+	 * The function to handle the redo calls
+	 * @return {[type]} [description]
+	 */
+	undoredo.prototype.redoCall = function() {
+		if (this.redo.length == 0) {
+			return
+		}
+
+		var redoObj = this.redo.pop()
+		redoObj.func(redoObj.args)
+
+		if (this.redo.length == 0) {
+			/** when no redo available, remove active class */
+			for (var i=0; i < this.redoButton.length; i++) {
+				$(this.redoButton[i]).removeClass('active')
+			}
+		}
+	}
+
+	/**
+	 * The function to handle the reset calls
+	 * @return {[type]} [description]
+	 */
+	undoredo.prototype.resetCall = function() {
+		this.undo = []
+		this.redo = []
+
+		this.resetFunc()
+
+		/** when no reset available, remove active class */
+		for (var i=0; i < this.resetButton.length; i++) {
+			$(this.resetButton[i]).removeClass('active')
+		}
+		/** when no undo available, remove active class */
+		for (var i=0; i < this.undoButton.length; i++) {
+			$(this.undoButton[i]).removeClass('active')
+		}
+		/** when no redo available, remove active class */
+		for (var i=0; i < this.redoButton.length; i++) {
+			$(this.redoButton[i]).removeClass('active')
+		}
 	}
 
 	/**
@@ -84,6 +187,14 @@
 					args: args.originalArgs
 				})
 			}
+			/** enable the redo button after new redo object is pushed */
+			for (var i=0; i < args.instance.redoButton.length; i++) {
+				$(args.instance.redoButton[i]).addClass('active')
+			}
+			/** enable the reset button after new redo object is pushed */
+			for (var i=0; i < args.instance.resetButton.length; i++) {
+				$(args.instance.resetButton[i]).addClass('active')
+			}
 		}
 		undoObj.args = options.args
 		undoObj.args.instance = options.instance
@@ -94,8 +205,25 @@
 		/** when the isRedo is not labeled, the redo array will be cleared */
 		if (!options.args.originalArgs.isRedo) {
 			this.redo = []
+
+			/** redo button also need to set inactive */
+			for (var i=0; i < this.redoButton.length; i++) {
+				$(this.redoButton[i]).removeClass('active')
+			}
+			/** enable the reset button after new undo object is pushed */
+			for (var i=0; i < this.resetButton.length; i++) {
+				$(this.resetButton[i]).addClass('active')
+			}
 		}
 		this.undo.push(undoObj)
+		/** enable the redo button after new undo object is pushed */
+		for (var i=0; i < this.undoButton.length; i++) {
+			$(this.undoButton[i]).addClass('active')
+		}
+		/** enable the reset button after new undo object is pushed */
+		for (var i=0; i < this.resetButton.length; i++) {
+			$(this.resetButton[i]).addClass('active')
+		}
 	}
 
 	/**
@@ -127,25 +255,14 @@
 		}
 	}
 
-	/**
-	 * The function to handle the redo calls
-	 * @return {[type]} [description]
-	 */
-	undoredo.prototype.redoCall = function() {
-		if (this.redo.length == 0) {
-			return
-		}
 
-		var redoObj = this.redo.pop()
-		redoObj.func(redoObj.args)
-	}
 	
 	/**
 	 * The function to initialize the undoredo module
 	 * @return {Object}         The object of undoredo module.
 	 */
-	undoredo.init = function() {
-		return new undoredo()
+	undoredo.init = function(options) {
+		return new undoredo(options)
 	}
 
 	window.undoredo = undoredo

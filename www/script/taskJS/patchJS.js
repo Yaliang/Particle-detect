@@ -21,10 +21,37 @@
 		/** set the element array to indicate the center of PMs */
 		this.points = []
 
+		/** set the selector of the undo operation element */
+		this.undoSelector = options.undoSelector || '#oper-undo'
+
+		/** set the selector of the redo operation element */
+		this.redoSelector = options.redoSelector || '#oper-redo'
+
+		/** set the selector of the reset operation element */
+		this.resetSelector = options.resetSelector || '#oper-reset'
+
+		/** set the selector of the done operation element */
+		this.doneSelector = options.doneSelector || '#oper-done'
+
+		/** set the max size of patch image */
+		this.maxsize = options.maxsize || '500px'
+
 		/** set the undo redo instance */
-		this.undoredo = undoredo.init()
+		this.undoredo = window.undoredo.init({
+			undoButton: $(this.undoSelector),
+			redoButton: $(this.redoSelector),
+			resetButton: $(this.resetSelector),
+			resetFunc: this.resetButtonFunc
+		})
 
 		return this
+	}
+
+	PatchJS.prototype.resetButtonFunc = function() {
+		for (var i=0; i<window.particle.PatchJS.points.length; i++) {
+			window.particle.PatchJS.points[i].remove()
+		}
+		window.particle.PatchJS.points = []
 	}
 
 	/**
@@ -297,19 +324,41 @@
 				/** set the size of image */
 				if ($(window).height() > $(window).width()) {
 					$(this).width("90vw")
-					$(this).css("max-width", "500px")
+					$(this).css("max-width", window.particle.PatchJS.maxsize)
 				} else {
 					$(this).height("90vh")
-					$(this).css("max-height", "500px")
+					$(this).css("max-height", window.particle.PatchJS.maxsize)
 				}
-				$(this).css("margin-top","5vh")
 				/** bind some events */
 				$(this).bind("touchstart", window.particle.PatchJS.onTouchStart)
 				$(this).bind("mousedown", window.particle.PatchJS.onClickStart)
 
 				/** fade In the image when loaded*/
 				$(this).fadeIn()
+
+				/** set the finish button event */
+				$(window.particle.PatchJS.doneSelector).off('touchend mouseup').on('touchend mouseup', function() {
+					window.particle.PatchJS.confirmFinish()
+				})
+
+				/** display the operations */
+				$(".operations").removeClass('floatdown').addClass('floatup');
+
+				
+
+				/** set timeout to enable the done button enable */
+				window.particle.PatchJS.doneButtonEnableTimer = setTimeout(function() {
+					$(window.particle.PatchJS.doneSelector).addClass('active')
+				}, 3000)
 			}
+			$(window.particle.PatchJS.doneSelector).removeClass('active')
+			/** reset the undo redo instance */
+			window.particle.PatchJS.undoredo = window.undoredo.init({
+				undoButton: $(window.particle.PatchJS.undoSelector),
+				redoButton: $(window.particle.PatchJS.redoSelector),
+				resetButton: $(window.particle.PatchJS.resetSelector),
+				resetFunc: window.particle.PatchJS.resetButtonFunc
+			})
 			/** load the image from options.patchURL */
 			imageDOM.src = options.patchURL
 			/** update the current patch DOM in patchJS object */
@@ -323,6 +372,7 @@
 			$(imageDOM).attr('data-frame-x', options.frameX)
 			$(imageDOM).attr('data-frame-y', options.frameY)
 			$(imageDOM).attr('data-frame-id', options.frameId)
+			$(imageDOM).addClass('patch_image')
 			/** add the image element into destination */
 			options.dest.append($(imageDOM))
 		}
@@ -343,6 +393,38 @@
 		options.dest = this.patchContainer || $(this.defaultContainerSelector)
 		options.callback = this.loadPatch
 		window.particle.DataService.getTask(options)
+	}
+
+	/**
+	 * The function that let the user can confirm when they click or touch the finish event
+	 */
+	PatchJS.prototype.confirmFinish = function() {
+		if (! $(window.particle.PatchJS.doneSelector).hasClass('active')) {
+			return
+		}
+		if (window.particle.PatchJS.points.length == 0) {
+			$("#confirm-text").html('NO PARTICLE IN PATCH?')
+		} else if (window.particle.PatchJS.points.length == 1) {
+			$("#confirm-text").html('SUBMIT '+window.particle.PatchJS.points.length.toString()+' LABELED PARTICLE IN PATCH?')
+		} else {
+			$("#confirm-text").html('SUBMIT '+window.particle.PatchJS.points.length.toString()+' LABELED PARTICLES IN PATCH?')
+		}
+		$("#operations").removeClass('floatup').addClass('floatdown')
+		$('#confirm').removeClass('floatdown').addClass('floatup')
+		$('#confirm-cancel').off('touchend mouseup').on('touchend mouseup', function() {
+			$("#confirm").removeClass('floatup').addClass('floatdown')
+			$("#operations").removeClass('floatdown').addClass('floatup')
+		})
+		$('#confirm-ok').off('touchend mouseup').on('touchend mouseup', function() {
+			window.particle.PatchJS.submitResult();
+			$("#confirm").removeClass('floatup').addClass('floatdown')
+			$('#operations').removeClass('floatdown')
+		})
+	}
+
+	PatchJS.prototype.submitResult = function() {
+		$(window.particle.PatchJS.patchDOM).fadeOut()
+		window.particle.PatchJS.requestTask()
 	}
 
 	

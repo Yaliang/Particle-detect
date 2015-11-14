@@ -11,11 +11,102 @@
 			z-index: 1000;
 			background-color: black;
 		}
+		.patch_image {
+			margin-top: 5vh;
+		}
 		.pointCenter {
 			z-index: 2000;
 			position: fixed;
 			margin-left: -15px;
-    		margin-top: -15px;
+			margin-top: -15px;
+		}
+		.full_screen_bottom {
+			z-index: 1001;
+			position: fixed;
+			bottom: 0;
+			left: 0;
+			width: 100vw;
+			height: 0;
+			background: #d9edf7;
+			animation: operationsMoving 5s linear 2s infinite alternate;
+		}
+		.active .opers {
+			color: #7173D1;
+			text-shadow: 0px 0px 3px #7173D1;
+		}
+		.confr {
+			padding-left: 50%;
+			margin-left: -8px;
+			line-height: 8vh;
+			zoom: 2;
+		}
+		.opers {
+			color: #CBCBCB;
+			padding-left: 50%;
+			margin-left: -8px;
+			line-height: 8vh;
+			zoom: 1.2;
+			font-weight: bold;
+		}
+		.operations.floatup {
+			animation: opersUp 200ms linear forwards;
+		}
+		.operations.floatdown {
+			animation: opersDown 200ms linear forwards;
+		}
+		.confirm.floatup {
+			animation: confirmUp 200ms linear forwards;
+		}
+		.confirm.floatdown {
+			animation: confirmDown 200ms linear forwards;
+		}
+		.confirm_text {
+			margin: auto; 
+			text-align: center;	
+			font-size: 0.8em;	
+			font-weight: bold; 
+			line-height: 4.5em;
+			margin-bottom: 1em;
+		}
+		@keyframes opersUp {
+			from {
+				height: 0;
+			}
+			to {
+				height: 10vh;
+			}
+		}
+		@keyframes opersDown {
+			from {
+				height: 10vh;
+			}
+			to {
+				height: 0vh;
+			}
+		}
+		@keyframes confirmUp {
+			from {
+				height: 0;
+			}
+			to {
+				height: 25vh;
+			}
+		}
+		@keyframes confirmDown {
+			from {
+				height: 25vh;
+			}
+			to {
+				height: 0;
+			}
+		}
+		@keyframes operationsMoving {
+			from {
+				background-color: #d9edf7;
+			}
+			to {
+				background-color: #C4E8FA;
+			}
 		}
 		@keyframes fadeIn {
 			from {
@@ -89,6 +180,37 @@
 	</div>
 	<div class='pointCenter hidden'>
 		<img src='./image/red-point-31.png' width='31' height='31'/>
+	</div>
+	<div id='operations' class='full_screen_bottom operations'>
+		<div class="row">
+			<div class="col-xs-1"></div>
+			<div id="oper-reset" class="col-xs-3">
+				<span class="center-block glyphicon glyphicon-remove opers" aria-hidden="true" data-enhance="false"></span>
+			</div>
+			<div id="oper-undo" class="col-xs-2">
+				<span class="center-block glyphicon glyphicon-chevron-left opers" aria-hidden="true" data-enhance="false"></span>
+			</div>
+			<div id="oper-redo" class="col-xs-2">
+				<span class="center-block glyphicon glyphicon-chevron-right opers" aria-hidden="true" data-enhance="false"></span>
+			</div>
+			<div id="oper-done" class="col-xs-3">
+				<span class="center-block glyphicon glyphicon-ok opers" aria-hidden="true" data-enhance="false"></span>
+			</div>
+			<div class="col-xs-1"></div>
+		</div>
+	</div>
+	<div id='confirm' class='full_screen_bottom confirm'>
+		<div class="row">
+			<div id='confirm-text' class='confirm_text'></div>
+		</div>
+		<div class="row" style="line-height: 4em;">
+			<div id="confirm-ok" class="col-xs-3 col-xs-offset-2">
+				<span class="center-block glyphicon glyphicon-ok confr" aria-hidden="true" data-enhance="false"></span>
+			</div>
+			<div id="confirm-cancel" class="col-xs-3 col-xs-offset-2">
+				<span class="center-block glyphicon glyphicon-remove confr" aria-hidden="true" data-enhance="false"></span>
+			</div>
+		</div>
 	</div>
 </main>
 <footer>
