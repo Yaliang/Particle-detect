@@ -51,7 +51,7 @@
 			},
 			error: function(user, error) {
 				if (options.errorHandler) {
-					options.errorHandler(user, error)
+					options.errorHandler(user, error, options)
 				}
 			}
 		})

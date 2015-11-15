@@ -32,8 +32,16 @@ user = {
 					$(".loginDiag").addClass('active')
 					$("#newSession").off('click').on('click', function(){
 						window.particle.DataService.register({
-							callback: function() {
+							callback: function(userobj) {
 								$(".loginDiag").removeClass('active')
+								options.callback(userobj)
+							},
+							errorHandler: function(user, error, options) {
+								window.particle.DataService.register({
+									callback: options.callback,
+									errorHandler: options.errorHandler,
+									trytime: (options.trytime || 0) + 1,
+								})
 							}
 						})
 					})
@@ -154,7 +162,30 @@ ajaxloader = {
 	},
 }
 
+setting = {
+	expose: function(event) {
+		$("body").append($("#menu-expose-origin"))
+		$("#menu-expose-origin").removeClass("exposing")
+		$("#menu-expose-origin").css("left", event.clientX.toString()+"px")
+		$("#menu-expose-origin").css("top", event.clientY.toString()+"px")
+		$("#menu-expose-origin").addClass("exposing")
+		setTimeout(function() {
+			$(".settingDiag").removeClass('active').off('click').on('click', function(){
+				$(".settingDiag").removeClass('active')
+			})
+			$(".setdiagbox").show()
+			$('body').append($(".settingDiag"))
+			$(".settingDiag").addClass('active')
+			$("#setting_id").html("<span style='text-weight: bold; margin-left:5%; width: 10%; display: inline-block; text-align:left;'>id:</span><span style=' display: inline-block; width: 80%; text-align:right;'>"+localStorage.username+"</span>")
+			$("#setting_token").html("<span style='text-weight: bold; margin-left:5%; width: 30%; display: inline-block; text-align:left;'>token:</span><span style=' display: inline-block; width: 60%; text-align:right;'>"+localStorage.password+"</span>")
+			$("#setting_confidence").html("<span style='text-weight: bold; margin-left: 5%; width: 50%;  display: inline-block;'>confidence:</span><span style=' display: inline-block; width: 40%; text-align:right;'>"+window.particle.user.confidence.toString()+"</span>")
+			$("#menu-expose-origin").removeClass("exposing")
+		},1500)
+	}
+}
+
 window.particle = {}
 window.particle.DataService = DataService.init()
 window.particle.PatchJS = PatchJS.init()
 window.particle.user = user
+window.particle.setting = setting

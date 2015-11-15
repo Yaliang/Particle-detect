@@ -323,10 +323,10 @@
 				$(this).addClass("center-block")
 				/** set the size of image */
 				if ($(window).height() > $(window).width()) {
-					$(this).width("90vw")
+					$(this).width("100vw")
 					$(this).css("max-width", window.particle.PatchJS.maxsize)
 				} else {
-					$(this).height("90vh")
+					$(this).height("80vh")
 					$(this).css("max-height", window.particle.PatchJS.maxsize)
 				}
 				/** bind some events */
@@ -344,14 +344,26 @@
 				/** display the operations */
 				$(".operations").removeClass('floatdown').addClass('floatup');
 
+				/** set timeout to enable the done button enable */
+				window.particle.PatchJS.skipButtonEnableTimer = setTimeout(function() {
+					/** enable skip */
+					$("#oper-skip").addClass('active')
+					$("#oper-skip").on('click', function(){
+						window.particle.PatchJS.requestTask()
+					})
+				}, 5000)
+
 				
 
 				/** set timeout to enable the done button enable */
 				window.particle.PatchJS.doneButtonEnableTimer = setTimeout(function() {
 					$(window.particle.PatchJS.doneSelector).addClass('active')
-				}, 2000)
+				}, 1800)
 			}
 			$(window.particle.PatchJS.doneSelector).removeClass('active')
+			/** disable skip */
+			$("#oper-skip").removeClass('active')
+			$("#oper-skip").off('click')
 			/** reset the undo redo instance */
 			window.particle.PatchJS.undoredo = window.undoredo.init({
 				undoButton: $(window.particle.PatchJS.undoSelector),
