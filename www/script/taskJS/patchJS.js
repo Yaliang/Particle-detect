@@ -364,7 +364,7 @@
 				/** set timeout to enable the done button enable */
 				window.particle.PatchJS.doneButtonEnableTimer = setTimeout(function() {
 					$(window.particle.PatchJS.doneSelector).addClass('active')
-				}, 1800)
+				}, 1000)
 			}
 			$(window.particle.PatchJS.doneSelector).removeClass('active')
 			/** disable skip */
