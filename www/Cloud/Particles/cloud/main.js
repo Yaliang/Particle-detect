@@ -92,7 +92,14 @@ Parse.Cloud.define('getTask', function(request, response) {
 
 function answerTaskPatch(request, response) {
 	/**
-	 * answer object which include the 
+	 * answer object:
+	 * 			length: the number of point what to submit
+	 * 			points: the array of points:
+	 * 				patchid: the id where the user labeled
+	 * 				positionXAtFrame: the position of x in frame
+	 * 				positionYAtFrame: the position of y in frame
+	 * 				confidence: the confidence of the label
+	 * 				
 	 * @type {Object}
 	 */
 	var answer = JSON.parse(request.params.answer)

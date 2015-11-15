@@ -236,9 +236,7 @@
 		}, {
 			success: function(state) {
 				if (options.callback) {
-					for (var key in state) {
-						options[key] = state[key]
-					}
+					options.response = state
 					options.callback(options)
 				}
 			},
