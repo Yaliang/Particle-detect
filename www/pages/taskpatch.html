@@ -215,6 +215,12 @@
 </main>
 <footer>
 	<script type="text/javascript">
-		window.particle.PatchJS.requestTask()
+		window.particle.user.autologin({
+			callback: function(userobj) {
+				window.particle.user.confidence = userobj.get('confidence')
+				window.particle.PatchJS.requestTask()
+			}
+		})
+		
 	</script>
 </footer>
