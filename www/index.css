@@ -52,3 +52,95 @@
 .header-btn {
     font-family: "Open Sans","Helvetica Neue",Helvetica,Arial,sans-serif;
 }
+
+.loginDiag {
+    position: fixed;
+    left: 0;
+    top: 0;
+    height: 100vh;
+    width: 100vw;
+    background-color: rgba(255, 255, 255, 0.5);
+    display:none;
+    opacity:0;
+}
+
+.loginDiag.active {
+    display:block;
+    z-index: 3000;
+    animation: fadeIn 1500ms 0ms forwards;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+.diagbox {
+    opacity: 0;
+    margin-top: 35vh;
+    color: #555;
+    text-shadow: none;
+    font-weight: 300;
+    text-align: center;
+    margin-left: 5vw;
+    margin-right: 5vw;
+    padding-left: 5vw;
+    padding-right: 5vw;
+    padding-top: 3vh;
+    padding-bottom: 3vh;
+    border: 1px solid #38c;
+    border-radius: 10px;
+    background-color: white;
+    /*backface-visibility: hidden;*/
+    transition: 0.6s;
+    transform-style: preserve-3d;
+}
+
+.active .diagbox {
+    animation: fadeIn 800ms 0ms forwards,
+                diagboxFloatUp 800ms 0ms forwards;
+}
+
+@keyframes diagboxFloatUp {
+    from {
+        margin-top: 35vh;
+    }
+    to {
+        margin-top: 25vh;
+    }
+}
+
+.diagbox_input {
+    color: #555;
+    text-shadow: none;
+    margin-top: 25vh;
+    font-weight: 300;
+    text-align: center;
+    margin-left: 5vw;
+    margin-right: 5vw;
+    padding-left: 5vw;
+    padding-right: 5vw;
+    padding-top: 3vh;
+    padding-bottom: 3vh;
+    border: 1px solid #38c;
+    border-radius: 10px;
+    background-color: white;
+    font-weight: bold; 
+    font-size: 0.7em;
+    line-height: 4em;
+    transform: rotateX(180deg);
+    /*backface-visibility: hidden;*/
+    transition: 0.6s;
+    transform-style: preserve-3d;
+}
+
+.diagbox_input_in {
+    line-height: 3em;
+    width: 100%;
+    margin-bottom: 0.5em;
+    border: 1px solid #38c;
+}

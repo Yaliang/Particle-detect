@@ -34,18 +34,19 @@
 		var user = new this.parse.User()
 
 		options = options || {}
-		options.username = options.username || Math.random().toString()
-		options.password = options.password || Math.random().toString()
+		options.username = options.username || Math.random().toString().substr(2)
+		options.password = options.password || Math.random().toString().substr(2, 4)
 
 		user.set("username", options.username)
 		user.set("password", options.password)
+		user.set("confidence", 0.5)
 
 		user.signUp(null, {
 			success: function(user) {
 				localStorage.username = options.username
 				localStorage.password = options.password
 				if (options.callback) {
-					options.callback()
+					options.callback(user)
 				}
 			},
 			error: function(user, error) {
@@ -77,16 +78,28 @@
 		options.username = options.username || localStorage.username
 		options.password = options.password || localStorage.password
 
+		if (!options.username || !options.password) {
+			if (options.errorHandler) {
+				options.errorHandler({}, {
+					code: '410',
+					message: 'No user info.'
+				})
+			}
+			return
+		}
+
 		/** run the LogIn function to get the session of current user */
 		this.parse.User.logIn(options.username, options.password, {
 			success: function(user) {
+				localStorage.username = options.username
+				localStorage.password = options.password
 				if (options.callback) {
-					options.callback()
+					options.callback(user)
 				}
 			},
 			error: function(user, error) {
 				if (options.errorHandler) {
-					otpions.errorHandler(user, error)
+					options.errorHandler(user, error)
 				}
 			}
 		})
@@ -207,7 +220,7 @@
 		}
 
 		/** fetch the current user id if the options not specify that */
-		options.userId = options.userId || this.parse.User.current().id
+		options.userid = options.userid || this.parse.User.current().id
 
 		/** run the answerTask Cloud Function to insert a new answer
 		 * 		The answer could be a review or a new insert record for a specific task
@@ -219,7 +232,7 @@
 		this.parse.Cloud.run('answerTask', {
 			taskType: options.taskType,
 			answer: JSON.stringify(options.answer),
-			userid: options.userId 
+			userid: options.userid 
 		}, {
 			success: function(state) {
 				if (options.callback) {
