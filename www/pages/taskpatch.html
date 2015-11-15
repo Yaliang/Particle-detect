@@ -12,7 +12,7 @@
 			background-color: black;
 		}
 		.patch_image {
-			margin-top: 5vh;
+			margin-top: 15vh;
 		}
 		.pointCenter {
 			z-index: 2000;
@@ -30,9 +30,39 @@
 			background: #d9edf7;
 			animation: operationsMoving 5s linear 2s infinite alternate;
 		}
+		.full_screen_top {
+			z-index: 1001;
+			position: fixed;
+			top: -8vh;
+			left: 0;
+			width: 100vw;
+			height: 8vh;
+			background: #d9edf7;
+			animation: operationsMoving 5s linear 2s infinite alternate;
+		}
+		.menubar {
+			color: #777777;
+			padding-left: 50%;
+			margin-left: -8px;
+			line-height: 6vh;
+			zoom: 1.2;
+			font-weight: 200;
+		}
+		.menu.floatdown {
+			animation: menuDown 200ms linear forwards,
+						operationsMoving 5s linear 2s infinite alternate;
+		}
+		.menu.floatup {
+			animation: menuUp 200ms linear forwards,
+						operationsMoving 5s linear 2s infinite alternate;
+		}
 		.active .opers {
 			color: #7173D1;
 			text-shadow: 0px 0px 3px #7173D1;
+		}
+		.active .menubar {
+			color: #7173D1;
+			text-shadow: 0px 0px 1px #7173D1;
 		}
 		.confr {
 			padding-left: 50%;
@@ -41,7 +71,7 @@
 			font-weight: 200;
 		}
 		.opers {
-			color: #777777;
+			color: #999999;
 			padding-left: 50%;
 			margin-left: -8px;
 			line-height: 8vh;
@@ -50,15 +80,19 @@
 		}
 		.operations.floatup {
 			animation: opersUp 200ms linear forwards;
+						/*operationsMoving 5s linear 2s infinite alternate;*/
 		}
 		.operations.floatdown {
 			animation: opersDown 200ms linear forwards;
+						/*operationsMoving 5s linear 2s infinite alternate;*/
 		}
 		.confirm.floatup {
 			animation: confirmUp 200ms linear forwards;
+						/*operationsMoving 5s linear 2s infinite alternate;*/
 		}
 		.confirm.floatdown {
 			animation: confirmDown 200ms linear forwards;
+						/*operationsMoving 5s linear 2s infinite alternate;*/
 		}
 		.confirm_text {
 			margin: auto; 
@@ -67,6 +101,22 @@
 			font-weight: bold; 
 			line-height: 4.5em;
 			margin-bottom: 1em;
+		}
+		@keyframes menuDown {
+			from {
+				top: -8vh;
+			}
+			to {
+				top: 0;
+			}
+		}
+		@keyframes menuUp {
+			from {
+				top: 0;
+			}
+			to {
+				top: -8vh;
+			}
 		}
 		@keyframes opersUp {
 			from {
@@ -176,6 +226,22 @@
 </header>
 <contentBackgroundColor>black</contentBackgroundColor>
 <main>
+	<div id='menubar' class='full_screen_top menu floatdown'>
+		<div class="row">
+			<div class="col-xs-1"></div>
+			<div id="menu-left" class="col-xs-2">
+				<span class="center-block glyphicon glyphicon-menu-hamburger menubar" aria-hidden="true" data-enhance="false"></span>
+			</div>
+			<div class="col-xs-6">
+				<span class="center-block" style="text-align: center; font-weight: 200; line-height:7vh; font-size: 0.9em; text-shade:0 0 0">LABLE PARTICLE</span>
+			</div>
+			<div id="oper-skip" class="col-xs-2">
+				<span class="center-block menubar" style="text-align: center; line-height:7vh; font-size: 0.9em; text-shade:0 0 0; zoom:1">Skip</span>
+				<!-- <span class="center-block glyphicon glyphicon-random menubar" aria-hidden="true" data-enhance="false"></span> -->
+			</div>
+			<div class="col-xs-1"></div>
+		</div>
+	</div>
 	<div id='patchImage' class='full_screen_black'>
 	</div>
 	<div class='pointCenter hidden'>
