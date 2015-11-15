@@ -342,6 +342,7 @@
 				})
 
 				/** display the operations */
+				// $("#confirm").addClass('floatdown').removeClass('floatup');
 				$(".operations").removeClass('floatdown').addClass('floatup');
 
 				/** set timeout to enable the done button enable */
@@ -349,6 +350,11 @@
 					/** enable skip */
 					$("#oper-skip").addClass('active')
 					$("#oper-skip").on('click', function(){
+						if ($("#confirm").hasClass("floatup")) {
+							$("#confirm").addClass('floatdown').removeClass('floatup');
+						}
+						$("#operations").removeClass('floatup').addClass('floatdown')
+						$(window.particle.PatchJS.patchDOM).fadeOut()
 						window.particle.PatchJS.requestTask()
 					})
 				}, 5000)
@@ -435,8 +441,36 @@
 	}
 
 	PatchJS.prototype.submitResult = function() {
+		/** build the answer object */
+		var answer = {
+			points: [],
+			length: window.particle.PatchJS.points.length
+		}
+		var patchid = $("#patchImage > img")[0].id
+		var patchXAtFrame = parseInt($("#"+patchid).attr("data-frame-x"))
+		var patchYAtFrame = parseInt($("#"+patchid).attr("data-frame-y"))
+		for (var i=0; i<answer.length; i++) {
+			answer.points.push({
+				patchid: patchid,
+				positionXAtFrame: patchXAtFrame + parseInt($(window.particle.PatchJS.points[i]).attr("data-real-x")),
+				positionYAtFrame: patchYAtFrame + parseInt($(window.particle.PatchJS.points[i]).attr("data-real-y")),
+				confidence: window.particle.user.confidence
+			})
+		}
+
+		window.particle.DataService.answerTask({
+			taskType: "patch",
+			answer: answer,
+			callback: function(options) {
+				window.particle.PatchJS.requestTask()
+			}
+		})
+		
 		$(window.particle.PatchJS.patchDOM).fadeOut()
-		window.particle.PatchJS.requestTask()
+		/** disable operations */
+		$("#oper-skip").removeClass('active')
+		$("#oper-skip").off('click')
+		$("#operations").removeClass('floatup').addClass('floatdown')
 	}
 
 	
