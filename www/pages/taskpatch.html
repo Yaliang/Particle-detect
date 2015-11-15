@@ -218,6 +218,7 @@
 		window.particle.user.autologin({
 			callback: function(userobj) {
 				window.particle.user.confidence = userobj.get('confidence')
+				$(".loginDiag").removeClass('active')
 				window.particle.PatchJS.requestTask()
 			}
 		})

@@ -11,10 +11,7 @@ user = {
 		window.particle.DataService.login({
 			username: options.id,
 			password: options.token,
-			callback: function(userobj) {
-				window.particle.user.confidence = userobj.get('confidence')
-				$(".loginDiag").removeClass('active')
-			},
+			callback: options.callback,
 			errorHandler: function(obj, error) {
 				var loginerrormsg = "<div style='display:none' class='alert alert-warning alert-dismissible' role='alert' style='margin-bottom:0'><button type='button' class='close' data-dismiss='alert' aria-label='Close'><span aria-hidden='true'>&times;</span></button>"+JSON.parse(JSON.stringify(error)).message+"</div>"
 				$("#loginerror").html(loginerrormsg)
@@ -58,7 +55,8 @@ user = {
 							event.preventDefault()
 							window.particle.user.login({
 								id: $("#input_id").val(),
-								token: $("#input_token").val()
+								token: $("#input_token").val(),
+								callback: options.callback
 							})
 						}
 					})
