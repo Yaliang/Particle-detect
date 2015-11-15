@@ -47,6 +47,7 @@
 			line-height: 6vh;
 			zoom: 1.2;
 			font-weight: 200;
+			cursor: default;
 		}
 		.menu.floatdown {
 			animation: menuDown 200ms linear forwards,
@@ -229,11 +230,11 @@
 	<div id='menubar' class='full_screen_top menu floatdown'>
 		<div class="row">
 			<div class="col-xs-1"></div>
-			<div id="menu-left" class="col-xs-2">
+			<div id="menu-expose" class="col-xs-2">
 				<span class="center-block glyphicon glyphicon-menu-hamburger menubar" aria-hidden="true" data-enhance="false"></span>
 			</div>
 			<div class="col-xs-6">
-				<span class="center-block" style="text-align: center; font-weight: 200; line-height:7vh; font-size: 0.9em; text-shade:0 0 0">LABLE PARTICLE</span>
+				<span class="center-block" style="text-align: center; font-weight: 200; line-height:7vh; font-size: 0.9em; text-shade:0 0 0">LABLE PARTICLES</span>
 			</div>
 			<div id="oper-skip" class="col-xs-2">
 				<span class="center-block menubar" style="text-align: center; line-height:7vh; font-size: 0.9em; text-shade:0 0 0; zoom:1">Skip</span>
@@ -286,6 +287,9 @@
 				window.particle.user.confidence = userobj.get('confidence')
 				$(".loginDiag").removeClass('active')
 				window.particle.PatchJS.requestTask()
+				$("#menu-expose").off('click').on('click', function(event){
+					window.particle.setting.expose(event)
+				})
 			}
 		})
 		
