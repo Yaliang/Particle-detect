@@ -353,7 +353,9 @@
 						if ($("#confirm").hasClass("floatup")) {
 							$("#confirm").addClass('floatdown').removeClass('floatup');
 						}
-						$("#operations").removeClass('floatup').addClass('floatdown')
+						if ($("#operations").hasClass("floatup")) {
+							$("#operations").removeClass('floatup').addClass('floatdown');
+						}
 						$(window.particle.PatchJS.patchDOM).fadeOut()
 						window.particle.PatchJS.requestTask()
 					})
@@ -457,6 +459,7 @@
 				positionYAtFrame: patchYAtFrame + parseInt($(window.particle.PatchJS.points[i]).attr("data-real-y")),
 				confidence: window.particle.user.confidence
 			})
+			$(window.particle.PatchJS.points[i]).fadeOut()
 		}
 
 		window.particle.DataService.answerTask({
