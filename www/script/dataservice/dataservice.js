@@ -219,6 +219,8 @@
 			return
 		}
 
+		console.log(options.answer)
+
 		/** fetch the current user id if the options not specify that */
 		options.userid = options.userid || this.parse.User.current().id
 
