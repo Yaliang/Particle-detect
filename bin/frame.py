@@ -46,11 +46,11 @@ def clip(args):
 
 
     # check if the (x+width, y+height) is out of range
-    lx, ly, dim = img.shape
+    ly, lx, dim = img.shape
     if x+width > lx or y+height > ly:
         return [False, np.array([], dtype='int32'), x, y]
 
-    p = img[x:x+width, y:y+height, :3]
+    p = img[y:y+height, x:x+width, :3]
 
     flag, message = checkContent([p])
 
@@ -92,6 +92,8 @@ def uploadPatch(args):
 
     # build the corresponding patch object
     connection.request('POST', '/1/classes/Patch', json.dumps({
+        "presentTime": 0,
+        "noLabelTime": 0,
         "positionXAtFrame": positionXAtFrame,
         "positionYAtFrame": positionYAtFrame,
         "sizeWidth": sizeWidth,

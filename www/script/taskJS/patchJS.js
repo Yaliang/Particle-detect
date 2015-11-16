@@ -442,11 +442,12 @@
 
 	PatchJS.prototype.submitResult = function() {
 		/** build the answer object */
+		var patchid = $("#patchImage > img")[0].id
 		var answer = {
 			points: [],
-			length: window.particle.PatchJS.points.length
+			length: window.particle.PatchJS.points.length,
+			patchid: patchid
 		}
-		var patchid = $("#patchImage > img")[0].id
 		var patchXAtFrame = parseInt($("#"+patchid).attr("data-frame-x"))
 		var patchYAtFrame = parseInt($("#"+patchid).attr("data-frame-y"))
 		for (var i=0; i<answer.length; i++) {

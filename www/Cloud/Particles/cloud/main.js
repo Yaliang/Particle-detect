@@ -41,14 +41,17 @@ function getTaskPatch(request, response) {
 	var query = new Parse.Query(Patches)
 	query.count().then(function(count) {
 		/** skip random number of patches and select one */
-		var randomSkipNumber=Math.floor(Math.random()*count)
+		var randomSkipNumber=Math.floor(Math.random()*count*0.3)
 		var query = new Parse.Query(Patches)
 		query.skip(randomSkipNumber)
 		query.limit(1)
-		query.ascending("createdAt")
+		query.ascending("presentTime")
 
 		query.find().then(function(patchesObj) {
 			var selectedPatch = patchesObj[0]
+			/** update the present time */
+			selectedPatch.increment("presentTime",1)
+			selectedPatch.save(null)
 			/** format the response object with the required properties */
 			resObj.patchURL = selectedPatch.get("image").url()
 			resObj.patchID = selectedPatch.id
@@ -109,6 +112,7 @@ function answerTaskPatch(request, response) {
 	var Patches = Parse.Object.extend("Patch")
 	var patch = new Patches()
 
+
 	/** set ACL */
 	var acl = new Parse.ACL()
 	acl.setPublicReadAccess(true)
@@ -132,11 +136,32 @@ function answerTaskPatch(request, response) {
 		point.save(null)
 	}
 
-	/** response success */
-	response.success({
-		code: '200',
-		message: 'All answer are saved.'
-	})
+	/** increase no particle */
+	if (answer.length == 0) {
+		var query = new Parse.Query(Patches)
+		console.log(answer.patchid)
+		query.get(answer.patchid, {
+			success: function(patchObj) {
+				console.log('fetch success')
+				patchObj.increment('noLabelTime', 1)
+				patchObj.save().then(function(){
+					/** response success */
+					response.success({
+						code: '200',
+						message: 'All answer are saved.'
+					})
+				})
+			}
+		})
+	} else {
+		/** response success */
+		response.success({
+			code: '200',
+			message: 'All answer are saved.'
+		})
+	}
+	
+	
 	
 }
 
