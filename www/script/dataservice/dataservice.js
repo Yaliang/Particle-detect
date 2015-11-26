@@ -98,7 +98,11 @@
 				}
 			},
 			error: function(user, error) {
-				if (options.errorHandler) {
+				console.log(error)
+				if (error.code == '209') {
+					window.particle.DataService.parse.User.logOut()
+					window.particle.DataService.login(options)
+				} else if (options.errorHandler) {
 					options.errorHandler(user, error)
 				}
 			}
