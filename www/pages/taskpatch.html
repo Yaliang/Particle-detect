@@ -49,6 +49,24 @@
 			font-weight: 200;
 			cursor: default;
 		}
+
+		.full_screen_top.extend-menu {
+			top: -92vh;
+    		height: inherit;
+		}
+
+		.extend-menu.floatdown {
+			animation: extendMenuDown 300ms linear forwards;
+		}
+
+		.extend-menu.floatup {
+			animation: extendMenuUp 300ms linear forwards;
+		}
+
+		.extend-menu .row {
+			height: 8vh;
+		}
+
 		.menu.floatdown {
 			animation: menuDown 200ms linear forwards,
 						operationsMoving 5s linear 2s infinite alternate;
@@ -102,6 +120,23 @@
 			font-weight: bold; 
 			line-height: 4.5em;
 			margin-bottom: 1em;
+		}
+
+		@keyframes extendMenuDown {
+			from {
+				top: -92vh;
+			}
+			to {
+				top: 8vh;
+			}
+		}
+		@keyframes extendMenuUp {
+			from {
+				top: 8vh;
+			}
+			to {
+				top: -92vh;
+			}
 		}
 		@keyframes menuDown {
 			from {
@@ -227,27 +262,6 @@
 </header>
 <contentBackgroundColor>black</contentBackgroundColor>
 <main>
-	<div id='menubar' class='full_screen_top menu floatdown'>
-		<div class="row">
-			<div class="col-xs-1"></div>
-			<div id="menu-expose" class="col-xs-2">
-				<span class="center-block glyphicon glyphicon-menu-hamburger menubar" aria-hidden="true" data-enhance="false"></span>
-			</div>
-			<div class="col-xs-6">
-				<span class="center-block" style="text-align: center; font-weight: 200; line-height:7vh; font-size: 0.9em; text-shade:0 0 0">LABLE PARTICLES</span>
-			</div>
-			<div id="oper-skip" class="col-xs-2">
-				<span class="center-block menubar" style="text-align: center; line-height:7vh; font-size: 0.9em; text-shade:0 0 0; zoom:1">Skip</span>
-				<!-- <span class="center-block glyphicon glyphicon-random menubar" aria-hidden="true" data-enhance="false"></span> -->
-			</div>
-			<div class="col-xs-1"></div>
-		</div>
-	</div>
-	<div id='patchImage' class='full_screen_black'>
-	</div>
-	<div class='pointCenter hidden'>
-		<img src='./image/red-point-31.png' width='31' height='31'/>
-	</div>
 	<div id='operations' class='full_screen_bottom operations'>
 		<div class="row">
 			<div class="col-xs-1"></div>
@@ -279,6 +293,41 @@
 			</div>
 		</div>
 	</div>
+
+	<div id='menu-extend' class='full_screen_top extend-menu'>
+		<div class="row" style='background-color: white; border: 1px solid #337ab7;'>
+			<div class="col-xs-1"></div>
+			<div class="col-xs-10">
+				<span class="center-block" style="text-align: center; font-weight: 200; line-height:7vh; font-size: 0.9em; text-shade:0 0 0">INSTRUCTION</span>
+			</div>
+			<div class="col-xs-1"></div>
+		</div>
+	</div>
+	<div id='menubar' class='full_screen_top menu floatdown'>
+		<div class="row">
+			<div class="col-xs-1"></div>
+			<div id="menu-expose" class="col-xs-2">
+				<span class="center-block glyphicon glyphicon-menu-hamburger menubar" aria-hidden="true" data-enhance="false"></span>
+			</div>
+			<div id="task-title" class="col-xs-6">
+				<span class="center-block" style="text-align: center; font-weight: 200; line-height:7vh; font-size: 0.9em; text-shade:0 0 0">LABLE PARTICLES</span>
+			</div>
+			<div id="oper-skip" class="col-xs-2">
+				<span class="center-block menubar" style="text-align: center; line-height:7vh; font-size: 0.9em; text-shade:0 0 0; zoom:1">Skip</span>
+				<!-- <span class="center-block glyphicon glyphicon-random menubar" aria-hidden="true" data-enhance="false"></span> -->
+			</div>
+			<div class="col-xs-1"></div>
+		</div>
+		
+	
+	
+
+	</div>
+	<div id='patchImage' class='full_screen_black'>
+	</div>
+	<div class='pointCenter hidden'>
+		<img src='./image/red-point-31.png' width='31' height='31'/>
+	</div>
 </main>
 <footer>
 	<script type="text/javascript">
@@ -289,6 +338,15 @@
 				window.particle.PatchJS.requestTask()
 				$("#menu-expose").off('click').on('click', function(event){
 					window.particle.setting.expose(event)
+				})
+				$("#task-title").off('click').on('click', function(){
+					if ($('.extend-menu').hasClass('floatdown')) {
+						$('.extend-menu').removeClass('floatdown').addClass('floatup')
+						$('#oper-skip').fadeIn()
+					} else {
+						$('.extend-menu').removeClass('floatup').addClass('floatdown')
+						$('#oper-skip').fadeOut()
+					}
 				})
 			}
 		})

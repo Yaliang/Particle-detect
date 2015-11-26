@@ -34,7 +34,7 @@
 		var user = new this.parse.User()
 
 		options = options || {}
-		options.username = options.username || Math.random().toString().substr(2)
+		options.username = options.username || Math.random().toString().substr(2, 10)
 		options.password = options.password || Math.random().toString().substr(2, 4)
 
 		user.set("username", options.username)
@@ -98,7 +98,11 @@
 				}
 			},
 			error: function(user, error) {
-				if (options.errorHandler) {
+				console.log(error)
+				if (error.code == '209') {
+					window.particle.DataService.parse.User.logOut()
+					window.particle.DataService.login(options)
+				} else if (options.errorHandler) {
 					options.errorHandler(user, error)
 				}
 			}

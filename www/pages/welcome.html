@@ -26,18 +26,25 @@
 		}
 		.intro {
 			margin: auto;
-			width: 100vw;
+			/*width: 100vw;*/
 			text-align: center;
 			position: fixed;
-			top: 42vh;
+			top: 38vh;
 			font-size: 1em;
 			font-weight: 300;
 			opacity:0;
 			animation: fadeIn 1500ms 0ms forwards;
+			padding-top: 3vh;
+			margin-top: -3vh;
+			padding-bottom: 3vh;
+			margin-bottom: -3vh;
+			margin-left: 5vw;
+			margin-right: 5vw;
+			text-shadow: 0 0 0;
 		}
 		.hello_out {
 			opacity: 0.8;
-			top: 35vh;
+			top: 25vh;
 			animation: floatTopOut 2500ms 500ms forwards,
 						fadeHalfOut 2500ms 500ms forwards;
 		}
@@ -91,12 +98,12 @@
 				top: 45vh;
 			}
 			to {
-				top: 35vh;
+				top: 25vh;
 			}
 		}
 		@keyframes floatTopOut {
 			from {
-				top: 35vh;
+				top: 25vh;
 			}
 			to {
 				top: 0vh;
@@ -104,7 +111,7 @@
 		}
 		@keyframes floatOut {
 			from {
-				top: 42vh;
+				top: 38vh;
 			}
 			to {
 				top: 10vh;
@@ -117,10 +124,11 @@
 	<div class='full_screen'>
 		<div class='nohello' style="display:none">Hello</div>
 		<div class='nointro' style="display:none">
-			<p>THANK YOU TO BE A CONTROBUTOR</p>
-			<p>LET'S START WITH A TUTORIAL</p>
+			<p>
+			   <span style="color: #D38693; font-weight: bold; font-style: italic;">DATA</span><span  style="color: #03A9F4; font-weight: bold;">LABELLER</span> is proposed to label massive data for the scientific purpose projects. Your helps could speed up their researches with significant impact.
+			<p>WELCOME TO BE A CONTROBUTOR.</p>
 			</br>
-			<button type="button" class="btn" id="startbtn" style="color: #337ab7; border: 1px solid; background-color: white;" data-enhance="false">START</button>
+			<button type="button" class="btn" id="startbtn" style="box-shadow: 0 0 0; outline: 0; color: #337ab7; background-color: white;" data-enhance="false">CONTINUE</button>
 		</div>
 	</div>
 </main>
@@ -140,6 +148,7 @@
 					$(".hello").attr("style","display:none")
 					$(".intro").attr("style","display:none")
 				}, 3000)
+				pt.loadPage("taskpatch")
 			})
 		})
 		

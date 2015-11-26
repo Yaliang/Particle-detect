@@ -33,6 +33,9 @@
 		/** set the selector of the done operation element */
 		this.doneSelector = options.doneSelector || '#oper-done'
 
+		/** set the selector of the skip operation element */
+		this.skipSelector = options.skipSelector || '#oper-skip'
+
 		/** set the max size of patch image */
 		this.maxsize = options.maxsize || '500px'
 
@@ -294,6 +297,8 @@
 		this.patchDOM = obj
 	}
 
+
+
 	/**
 	 * The function which can load the patch image from the parse.com server
 	 * @param  {Object} options The options is a object which contains some essential 
@@ -345,33 +350,26 @@
 				// $("#confirm").addClass('floatdown').removeClass('floatup');
 				$(".operations").removeClass('floatdown').addClass('floatup');
 
+				/** set the skip button event */
+				$(window.particle.PatchJS.skipSelector).off('click').on('click', function() {
+					window.particle.PatchJS.skipTask()
+				})
+
 				/** set timeout to enable the done button enable */
 				window.particle.PatchJS.skipButtonEnableTimer = setTimeout(function() {
 					/** enable skip */
-					$("#oper-skip").addClass('active')
-					$("#oper-skip").on('click', function(){
-						if ($("#confirm").hasClass("floatup")) {
-							$("#confirm").addClass('floatdown').removeClass('floatup');
-						}
-						if ($("#operations").hasClass("floatup")) {
-							$("#operations").removeClass('floatup').addClass('floatdown');
-						}
-						$(window.particle.PatchJS.patchDOM).fadeOut()
-						window.particle.PatchJS.requestTask()
-					})
+					$(window.particle.PatchJS.skipSelector).addClass('active')
 				}, 5000)
-
-				
 
 				/** set timeout to enable the done button enable */
 				window.particle.PatchJS.doneButtonEnableTimer = setTimeout(function() {
 					$(window.particle.PatchJS.doneSelector).addClass('active')
 				}, 1000)
 			}
+			/** disable finish */
 			$(window.particle.PatchJS.doneSelector).removeClass('active')
 			/** disable skip */
-			$("#oper-skip").removeClass('active')
-			$("#oper-skip").off('click')
+			$(window.particle.PatchJS.skipSelector).removeClass('active')
 			/** reset the undo redo instance */
 			window.particle.PatchJS.undoredo = window.undoredo.init({
 				undoButton: $(window.particle.PatchJS.undoSelector),
@@ -413,6 +411,24 @@
 		options.dest = this.patchContainer || $(this.defaultContainerSelector)
 		options.callback = this.loadPatch
 		window.particle.DataService.getTask(options)
+	}
+
+	/**
+	 * The function to skip current task and request a new task
+	 * @return {[type]} [description]
+	 */
+	PatchJS.prototype.skipTask = function() {
+		if (! $(window.particle.PatchJS.skipSelector).hasClass('active')) {
+			return
+		}
+		if ($("#confirm").hasClass("floatup")) {
+			$("#confirm").addClass('floatdown').removeClass('floatup');
+		}
+		if ($("#operations").hasClass("floatup")) {
+			$("#operations").removeClass('floatup').addClass('floatdown');
+		}
+		$(window.particle.PatchJS.patchDOM).fadeOut()
+		window.particle.PatchJS.requestTask()
 	}
 
 	/**
@@ -472,8 +488,7 @@
 		
 		$(window.particle.PatchJS.patchDOM).fadeOut()
 		/** disable operations */
-		$("#oper-skip").removeClass('active')
-		$("#oper-skip").off('click')
+		$(window.particle.PatchJS.skipSelector).removeClass('active')
 		$("#operations").removeClass('floatup').addClass('floatdown')
 	}
 

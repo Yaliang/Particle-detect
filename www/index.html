@@ -53,11 +53,11 @@
 
     <div class='loginDiag' data-enhance='false'>
         <div class='diagbox'>
-            <p style='font-weight: bold; font-size: 0.8em'>IN ORDER TO ESTIMATE RECORDS' CONFIDENCE, A TRACKABLE SESSION IS REQUIRED. SESSION ID AND TOKEN CAN BE FOUND IN LEFT-TOP MENU.</p>
+            <p style='font-weight: bold; font-size: 0.8em'>A TRACKABLE ID IS USED TO INFER RECORDS' CONFIDENCE.</br>IF YOU HAVE A SESSION IN OTHER DEVICE, YOU CAN RETRIEVE ID AND TOKEN FROM LEFT-TOP MENU IN THAT DEVICE.</p>
             </br>
-            <button type="button" id="newSession" class="btn" style="display:block; margin-left: auto; margin-right: auto; color: white; border: 1px solid; background-color: #337ab7; width:90%; line-height: 2.2em " data-enhance="false">GET A RANDOM SESSION</button>
+            <button type="button" id="transferSession" class="btn" style="display:block; margin-left: auto; margin-right: auto; color: white; border: 1px solid; background-color: #337ab7; width: 90%; line-height: 2.2em" data-enhance="false">I HAVE ONE</button>
             </br>
-            <button type="button" id="transferSession" class="btn" style="display:block; margin-left: auto; margin-right: auto; color: #337ab7; border: 1px solid; background-color: white; width: 90%; line-height: 2.2em" data-enhance="false">I HAVE ONE</button>
+            <button type="button" id="newSession" class="btn" style="display:block; margin-left: auto; margin-right: auto; color: #337ab7; border: 1px solid; background-color: white; width:90%; line-height: 2.2em " data-enhance="false">GET A RANDOM SESSION</button>
         </div>
 
         <div class='diagbox_input'>
@@ -111,7 +111,7 @@
 
         pt = pageTransition.init({
             ajaxloader: ajaxloader,
-            // initPage: "welcome"
+            initPage: "welcome"
         })
 
     </script>

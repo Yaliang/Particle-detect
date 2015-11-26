@@ -93,7 +93,92 @@ Parse.Cloud.define('getTask', function(request, response) {
 	}
 })
 
-function answerTaskPatch(request, response) {
+function findSuperPoint(point, response) {
+	Parse.Cloud.useMasterKey();
+
+	var baseTolerance = 4
+	var SuperPoint = Parse.Object.extend('SuperPoint')
+	var query = new Parse.Query(SuperPoint)
+	var p_x = point.get('positionXAtFrame')
+	var p_y = point.get('positionYAtFrame')
+
+	/** set ACL */
+	var acl_readonly = new Parse.ACL()
+	acl_readonly.setPublicReadAccess(true)
+
+	/** find the super points in the base tolerance range */
+	query.greaterThan("meanPositionXAtFrame", p_x - baseTolerance)
+	query.lessThan("meanPositionXAtFrame", p_x + baseTolerance)
+	query.greaterThan("meanPositionYAtFrame", p_y - baseTolerance)
+	query.lessThan("meanPositionYAtFrame", p_y + baseTolerance)
+
+	query.find().then(function(superPoints){
+		if (superPoints.length == 0) {
+			// create a new super point when no super point exist
+			var newSP = new SuperPoint()
+			newSP.set("meanPositionXAtFrame", p_x)
+			newSP.set("meanPositionYAtFrame", p_y)
+			newSP.setACL(acl_readonly)
+			var point_patch = point.get('patch')
+			point_patch.fetch().then(function(patch) {
+				newSP.set('frame', patch.get('frame'))
+				newSP.save().then(function(sp) {
+					point.set('superPoint', sp)
+					point.save().then(function(){
+						/** response success */
+						response.success({
+							code: '200',
+							message: 'All answer are saved. A new Super Point is built.'
+						})
+					})
+				})
+			})
+			
+		} else {
+			// find the best match
+			var closest = 0
+			var minDis = 1000000
+			for (var i=0; i<superPoints.length; i++) {
+				var nowSP = superPoints[i]
+				var nowSP_x = nowSP.get('meanPositionXAtFrame')
+				var nowSP_y = nowSP.get('meanPositionYAtFrame')
+				var dis = Math.sqrt((nowSP_x - p_x) * (nowSP_x - p_x) + (nowSP_y - p_y) * (nowSP_y - p_y))
+				if (dis < minDis) {
+					closest = i
+					minDis = dis
+				}
+			}
+			// store and update
+			point.set('superPoint', superPoints[closest])
+			point.save().then(function(point) {
+				var Point = Parse.Object.extend("Point")
+				var newquery = new Parse.Query(Point)
+
+				newquery.equalTo('superPoint', superPoints[closest])
+
+				newquery.find().then(function(points) {
+					var sum_x = 0.0
+					var sum_y = 0.0
+					for (var j = 0; j < points.length; j++) {
+						sum_x += points[j].get('positionXAtFrame')
+						sum_y += points[j].get('positionYAtFrame')
+					}
+					superPoints[closest].set('meanPositionXAtFrame', sum_x / points.length)
+					superPoints[closest].set('meanPositionYAtFrame', sum_y / points.length)
+					superPoints[closest].save().then(function(){
+						/** response success */
+						response.success({
+							code: '200',
+							message: 'All answer are saved. A Super Point is updated'
+						})
+					})
+				})
+			})
+		}
+	})
+}
+
+function insertPoint(request, response) {
 	/**
 	 * answer object:
 	 * 			length: the number of point what to submit
@@ -133,13 +218,27 @@ function answerTaskPatch(request, response) {
 		point.set('confidenceAtCreated', answer.points[i].confidence)
 		point.set('confidence', answer.points[i].confidence)
 		point.set('reviewNumber', 0)
-		point.save(null)
+		point.save().then(function(point) {
+			// find the super point
+			try {
+				findSuperPoint(point, response)
+			}
+			catch(err) {
+				/** response success */
+				response.success({
+					code: '200',
+					message: 'All answer are saved. But has internal error when finding super point',
+					error: JSON.stringify(err)
+				})
+			}
+		}, function(error) {
+			response.error(error)
+		})
 	}
 
 	/** increase no particle */
 	if (answer.length == 0) {
 		var query = new Parse.Query(Patches)
-		console.log(answer.patchid)
 		query.get(answer.patchid, {
 			success: function(patchObj) {
 				console.log('fetch success')
@@ -150,19 +249,12 @@ function answerTaskPatch(request, response) {
 						code: '200',
 						message: 'All answer are saved.'
 					})
+				}, function(error) {
+					response.error(error)
 				})
 			}
 		})
-	} else {
-		/** response success */
-		response.success({
-			code: '200',
-			message: 'All answer are saved.'
-		})
 	}
-	
-	
-	
 }
 
 Parse.Cloud.define('answerTask', function(request, response) {
@@ -178,7 +270,7 @@ Parse.Cloud.define('answerTask', function(request, response) {
 	}
 	switch(options.taskType) {
 		case 'patch':
-			answerTaskPatch(request, response)
+			insertPoint(request, response)
 			break
 		default:
 			response.error({
@@ -186,4 +278,22 @@ Parse.Cloud.define('answerTask', function(request, response) {
 				message: 'The answer cannot match any type of task defined in cloud.'
 			})
 	}
+})
+
+Parse.Cloud.define('updatePointsWithoutSuperPoint', function(request, response) {
+	var Point = Parse.Object.extend("Point")
+	var query = new Parse.Query(Point)
+	query.doesNotExist('superPoint')
+	query.first().then(function(point) {
+		if (point) {
+			// it exists
+			findSuperPoint(point, response)
+		} else {
+			// no unassigned point exists
+			response.error({
+				code: '406',
+				message: 'No such point exists.'
+			})
+		}
+	})
 })
