@@ -93,7 +93,7 @@ Parse.Cloud.define('getTask', function(request, response) {
 	}
 })
 
-function findSuperPoint(point, response) {
+function findSuperPoint(point, response, o) {
 	Parse.Cloud.useMasterKey();
 
 	var baseTolerance = 4
@@ -125,11 +125,14 @@ function findSuperPoint(point, response) {
 				newSP.save().then(function(sp) {
 					point.set('superPoint', sp)
 					point.save().then(function(){
-						/** response success */
-						response.success({
-							code: '200',
-							message: 'All answer are saved. A new Super Point is built.'
-						})
+						o.unfinished -= 1
+						if (o.unfinished <= 0) {
+							/** response success */
+							response.success({
+								code: '200',
+								message: 'All answer are saved. A new Super Point is built.'
+							})
+						}
 					})
 				})
 			})
@@ -166,11 +169,14 @@ function findSuperPoint(point, response) {
 					superPoints[closest].set('meanPositionXAtFrame', sum_x / points.length)
 					superPoints[closest].set('meanPositionYAtFrame', sum_y / points.length)
 					superPoints[closest].save().then(function(){
-						/** response success */
-						response.success({
-							code: '200',
-							message: 'All answer are saved. A Super Point is updated'
-						})
+						o.unfinished -= 1
+						if (o.unfinished <= 0) {
+							/** response success */
+							response.success({
+								code: '200',
+								message: 'All answer are saved. A new Super Point is built.'
+							})
+						}
 					})
 				})
 			})
@@ -203,6 +209,11 @@ function insertPoint(request, response) {
 	acl.setPublicReadAccess(true)
 	acl.setWriteAccess(request.user.id, true)
 
+	/** set a options to indicate how many points left */
+	var o = {
+		unfinished: answer.length
+	}
+
 	/** save all point in the answer set */
 	for (var i=0; i<answer.length; i++) {
 		/** set the patch */
@@ -221,7 +232,7 @@ function insertPoint(request, response) {
 		point.save().then(function(point) {
 			// find the super point
 			try {
-				findSuperPoint(point, response)
+				findSuperPoint(point, response, o)
 			}
 			catch(err) {
 				/** response success */

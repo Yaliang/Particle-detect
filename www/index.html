@@ -109,9 +109,9 @@
             isPhonegap = true
         }
 
-        pt = pageTransition.init({
+        window.particle.pt = pageTransition.init({
             ajaxloader: ajaxloader,
-            initPage: "welcome"
+            initPage: localStorage.currentPage || "welcome"
         })
 
     </script>

@@ -173,7 +173,9 @@ setting = {
 			$(".settingDiag").removeClass('active').off('click').on('click', function(){
 				$(".settingDiag").removeClass('active')
 			})
-			$(".setdiagbox").show()
+			$(".setdiagbox").show().off('click').on('click', function(e){
+				e.stopPropagation()
+			})
 			$('body').append($(".settingDiag"))
 			$(".settingDiag").addClass('active')
 			$("#setting_id").html("<span style='text-weight: bold; margin-left:5%; width: 10%; display: inline-block; text-align:left;'>id:</span><span style=' display: inline-block; width: 80%; text-align:right;'>"+localStorage.username+"</span>")

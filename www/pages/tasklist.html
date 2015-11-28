@@ -1,0 +1,225 @@
+<pageid>tasklist</pageid>
+<title>Task</title>
+<header>
+	<style type="text/css">
+		.list-full_screen_black {
+			position: fixed;
+			top: 0;
+			left: 0;
+			width: 100vw;
+			height: 100vh;
+			z-index: 1000;
+			background-color: black;
+		}
+		.list-full_screen_top {
+			z-index: 1001;
+			position: fixed;
+			top: -8vh;
+			left: 0;
+			width: 100vw;
+			height: 8vh;
+			background: #d9edf7;
+			animation: operationsMoving 5s linear 2s infinite alternate;
+		}
+		.list-menubar {
+			color: #777777;
+			padding-left: 50%;
+			margin-left: -8px;
+			line-height: 6vh;
+			zoom: 1.2;
+			font-weight: 200;
+			cursor: default;
+		}
+
+		.list-full_screen_top.task-list {
+			top: 8vh;
+			height: inherit;
+		}
+
+		.task-list .row {
+			height: 8vh;
+		}
+
+		.list-menu.floatdown {
+			animation: menuDown 200ms linear forwards,
+						operationsMoving 5s linear 2s infinite alternate;
+		}
+		.list-menu.floatup {
+			animation: menuUp 200ms linear forwards,
+						operationsMoving 5s linear 2s infinite alternate;
+		}
+		.active .list-menubar {
+			color: #7173D1;
+			text-shadow: 0px 0px 1px #7173D1;
+		}
+
+		@keyframes menuDown {
+			from {
+				top: -8vh;
+			}
+			to {
+				top: 0;
+			}
+		}
+		@keyframes menuUp {
+			from {
+				top: 0;
+			}
+			to {
+				top: -8vh;
+			}
+		}
+		@keyframes opersUp {
+			from {
+				height: 0;
+			}
+			to {
+				height: 10vh;
+			}
+		}
+		@keyframes opersDown {
+			from {
+				height: 10vh;
+			}
+			to {
+				height: 0vh;
+			}
+		}
+		@keyframes confirmUp {
+			from {
+				height: 0;
+			}
+			to {
+				height: 25vh;
+			}
+		}
+		@keyframes confirmDown {
+			from {
+				height: 25vh;
+			}
+			to {
+				height: 0;
+			}
+		}
+		@keyframes operationsMoving {
+			from {
+				background-color: #d9edf7;
+			}
+			to {
+				background-color: #C4E8FA;
+			}
+		}
+		@keyframes fadeIn {
+			from {
+				opacity: 0;
+			}
+			to {
+				opacity: 1;
+			}
+		}
+		@keyframes fadeHalf {
+			from {
+				opacity: 1;
+			}
+			to {
+				opacity: 0.8;
+			}
+		}
+		@keyframes fadeHalfOut {
+			from {
+				opacity: 0.8;
+			}
+			to {
+				opacity: 0;
+			}
+		}
+		@keyframes fadeOut {
+			from {
+				opacity: 1;
+			}
+			to {
+				opacity: 0;
+			}
+		}
+		@keyframes floatUp {
+			from {
+				top: 50vh;
+			}
+			to {
+				top: 45vh;
+			}
+		}
+		@keyframes floatTop {
+			from {
+				top: 45vh;
+			}
+			to {
+				top: 35vh;
+			}
+		}
+		@keyframes floatTopOut {
+			from {
+				top: 35vh;
+			}
+			to {
+				top: 0vh;
+			}
+		}
+		@keyframes floatOut {
+			from {
+				top: 42vh;
+			}
+			to {
+				top: 10vh;
+			}
+		}
+	</style>
+</header>
+<contentBackgroundColor>black</contentBackgroundColor>
+<main>
+
+	<div id='task-list' class='list-full_screen_top task-list floatdown'>
+		<div class="row" style='border: 1px solid white;'>
+			<div class="col-xs-1"></div>
+			<div class="col-xs-10 list-task-patch">
+				<span class="center-block" style="text-align: center; font-weight: 200; line-height:7vh; font-size: 0.9em; text-shade:0 0 0">LABEL PARTICLES</span>
+			</div>
+			<div class="col-xs-1"></div>
+		</div>
+	</div>
+	<div id='menubar' class='list-full_screen_top list-menu floatdown'>
+		<div class="row">
+			<div class="col-xs-1"></div>
+			<div id="menu-expose" class="col-xs-2">
+				<span class="center-block glyphicon glyphicon-menu-hamburger list-menubar" aria-hidden="true" data-enhance="false"></span>
+			</div>
+			<div class="col-xs-6">
+				<span class="center-block" style="text-align: center; font-weight: 200; line-height:7vh; font-size: 0.9em; text-shadow:0 0 0">TASK LIST</span>
+			</div>
+			<div class="col-xs-2">
+			</div>
+			<div class="col-xs-1"></div>
+		</div>
+	</div>
+	
+</main>
+<footer>
+	<script type="text/javascript">
+
+		window.particle.user.autologin({
+			callback: function(userobj) {
+				window.particle.user.confidence = userobj.get('confidence')
+				$(".loginDiag").removeClass('active')
+				$("#menu-expose").off('click').on('click', function(event){
+					window.particle.setting.expose(event)
+				})
+				window.particle.pt.pageStack = []
+				$(".list-task-patch").off('click').on('click', function() {
+					window.particle.pt.loadPage("taskpatch")
+				})
+				localStorage.currentPage='tasklist'
+			}
+		})
+		
+	</script>
+</footer>
