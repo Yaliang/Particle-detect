@@ -94,6 +94,14 @@
     <gap:config-file platform="ios" parent="UIStatusBarHidden">
         <true/>
     </gap:config-file>
+    <gap:config-file platform="ios" parent="application-identifier">
+    <string>JFEKFYT4B9.com.datalabeller</string>
+    </gap:config-file>
+    <gap:config-file platform="ios" parent="application-identifier">
+    <array>
+        <string>JFEKFYT4B9.com.datalabeller</string>
+    </array>
+    </gap:config-file>
 
     
     <access origin="*"/>
