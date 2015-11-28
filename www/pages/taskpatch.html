@@ -11,6 +11,29 @@
 			z-index: 1000;
 			background-color: black;
 		}
+		.patch_Instr.full_screen_black {
+			z-index: 2001;
+			top: 100vh;
+		}
+		.patch_Instr.floatdown {
+			animation: instrDown 300ms linear forwards;
+		}
+		.patch_Instr.floatup {
+			animation: instrUp 300ms linear forwards;
+		}
+
+		.slide, .slide .carousel-inner, .carousel-inner .item, .carousel-inner .item img {
+			height: 85vh;
+		}
+
+		.carousel-inner .item img {
+			margin:auto;
+		}
+
+		.slide .carousel-indicators {
+			top: 87vh;
+		}
+
 		.patch_image {
 			margin-top: 15vh;
 		}
@@ -52,7 +75,7 @@
 
 		.full_screen_top.extend-menu {
 			top: -92vh;
-    		height: inherit;
+				height: inherit;
 		}
 
 		.extend-menu.floatdown {
@@ -120,6 +143,23 @@
 			font-weight: bold; 
 			line-height: 4.5em;
 			margin-bottom: 1em;
+		}
+
+		@keyframes instrDown {
+			from {
+				top: 0vh;
+			}
+			to {
+				top: 100vh;
+			}
+		}
+		@keyframes instrUp {
+			from {
+				top: 100vh;
+			}
+			to {
+				top: 0vh;
+			}
 		}
 
 		@keyframes extendMenuDown {
@@ -295,10 +335,17 @@
 	</div>
 
 	<div id='menu-extend' class='full_screen_top extend-menu'>
-		<div class="row" style='background-color: white; border: 1px solid #337ab7;'>
+		<div class="row instr-show" style='background-color: white; border: 1px solid #337ab7;'>
 			<div class="col-xs-1"></div>
 			<div class="col-xs-10">
-				<span class="center-block" style="text-align: center; font-weight: 200; line-height:7vh; font-size: 0.9em; text-shade:0 0 0">INSTRUCTION</span>
+				<span class="center-block" style="text-align: center; font-weight: 200; line-height:7vh; font-size: 0.9em; text-shadow:0 0 0">INSTRUCTION</span>
+			</div>
+			<div class="col-xs-1"></div>
+		</div>
+		<div class="row back-to-task-list" style='background-color: white; border: 1px solid #337ab7; border-top:0px;'>
+			<div class="col-xs-1"></div>
+			<div class="col-xs-10">
+				<span class="center-block" style="text-align: center; font-weight: 200; line-height:7vh; font-size: 0.9em; text-shadow:0 0 0">GO TO TASK LIST</span>
 			</div>
 			<div class="col-xs-1"></div>
 		</div>
@@ -310,7 +357,7 @@
 				<span class="center-block glyphicon glyphicon-menu-hamburger menubar" aria-hidden="true" data-enhance="false"></span>
 			</div>
 			<div id="task-title" class="col-xs-6">
-				<span class="center-block" style="text-align: center; font-weight: 200; line-height:7vh; font-size: 0.9em; text-shade:0 0 0">LABLE PARTICLES</span>
+				<span class="center-block" style="text-align: center; font-weight: 200; line-height:7vh; font-size: 0.9em; text-shadow:0 0 0">LABLE PARTICLES</span>
 			</div>
 			<div id="oper-skip" class="col-xs-2">
 				<span class="center-block menubar" style="text-align: center; line-height:7vh; font-size: 0.9em; text-shade:0 0 0; zoom:1">Skip</span>
@@ -318,19 +365,70 @@
 			</div>
 			<div class="col-xs-1"></div>
 		</div>
-		
-	
-	
-
 	</div>
 	<div id='patchImage' class='full_screen_black'>
 	</div>
 	<div class='pointCenter hidden'>
 		<img src='./image/red-point-31.png' width='31' height='31'/>
 	</div>
+
+	<div id='patchInstr' class='patch_Instr full_screen_black'>
+		<div class="row">
+			<div class="col-xs-1 col-xs-offset-10 instr-close">
+				<span class="center-block glyphicon glyphicon-remove menubar" style="color: white" aria-hidden="true" data-enhance="false"></span>
+			</div>
+		</div>
+		<div id="carousel-instr" class="carousel slide" data-ride="carousel" data-keyboard="true">
+			<!-- Indicators -->
+			<ol class="carousel-indicators">
+				<li data-target="#carousel-instr" data-slide-to="0" class="active"></li>
+				<li data-target="#carousel-instr" data-slide-to="1"></li>
+				<li data-target="#carousel-instr" data-slide-to="2"></li>
+				<li data-target="#carousel-instr" data-slide-to="3"></li>
+				<li data-target="#carousel-instr" data-slide-to="4"></li>
+				<li data-target="#carousel-instr" data-slide-to="5"></li>
+				<li data-target="#carousel-instr" data-slide-to="6"></li>
+			</ol>
+			<!-- Wrapper for slides -->
+			<div class="carousel-inner" role="listbox">
+				<div class="item active item-0"></div>
+				<div class="item item-1"></div>
+				<div class="item item-2"></div>
+				<div class="item item-3"></div>
+				<div class="item item-4"></div>
+				<div class="item item-5"></div>
+				<div class="item item-6"></div>
+			</div>
+		</div>
+	</div>
 </main>
 <footer>
 	<script type="text/javascript">
+
+		function instrShow() {
+			$('#patchInstr').removeClass('floatdown').addClass('floatup')
+			$('.carousel').carousel(0)
+			if ($('.extend-menu').hasClass('floatdown')) {
+				$('.extend-menu').removeClass('floatdown').addClass('floatup')
+				$('#oper-skip').fadeIn()
+			}
+			for (var i=0; i<=6; i++) {
+				var imageDOM = new Image()
+				imageDOM.onload = function() {
+					$(this).fadeIn()
+				}
+				imageDOM.src = './image/instr/patch/File_0'+i.toString()+'.png'
+				$(imageDOM).hide()
+				$(imageDOM).on('swipeleft', function(){
+					$('.carousel').carousel('next')
+				})
+				$(imageDOM).on('swiperight', function(){
+					$('.carousel').carousel('prev')
+				})
+				$('.item-'+i.toString()).html($(imageDOM))
+			}
+		}
+
 		window.particle.user.autologin({
 			callback: function(userobj) {
 				window.particle.user.confidence = userobj.get('confidence')
@@ -348,6 +446,27 @@
 						$('#oper-skip').fadeOut()
 					}
 				})
+				$('.carousel').carousel({
+					interval: false
+				})
+				$('.instr-close').off('click').on('click', function(){
+					$('#patchInstr').removeClass('floatup').addClass('floatdown')
+				})
+				$('.instr-show').off('click').on('click', function(){
+					instrShow()
+				})
+				$('.back-to-task-list').off('click').on('click', function(){
+					window.particle.pt.loadPage('tasklist')
+					if ($('.extend-menu').hasClass('floatdown')) {
+						$('.extend-menu').removeClass('floatdown').addClass('floatup')
+						$('#oper-skip').fadeIn()
+					}
+				})
+				if (!localStorage.taskpatchINSTR) {
+					localStorage.taskpatchINSTR = true
+					instrShow()
+				}
+				localStorage.currentPage='taskpatch'
 			}
 		})
 		
