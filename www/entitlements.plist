@@ -3,14 +3,14 @@
 <plist version="1.0">
 <dict>
     <key>application-identifier</key>
-    <string>JFEKFYT4B9.com.fiou</string>
+    <string>JFEKFYT4B9.com.datalabeller</string>
     <key>aps-environment</key>
     <string>production</string>
     <key>get-task-allow</key>
     <false/>
     <key>keychain-access-groups</key>
     <array>
-        <string>JFEKFYT4B9.com.fiou</string>
+        <string>JFEKFYT4B9.com.datalabeller</string>
     </array>
 </dict>
 </plist>
