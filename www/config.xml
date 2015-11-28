@@ -89,10 +89,10 @@
     <string>100</string>
     </gap:config-file>
     <gap:config-file platform="ios" parent="UIViewControllerBasedStatusBarAppearance">
-    <boolean>false</boolean>
+        <false/>
     </gap:config-file>
     <gap:config-file platform="ios" parent="UIStatusBarHidden">
-    <boolean>true</boolean>
+        <true/>
     </gap:config-file>
 
     
