@@ -6,7 +6,7 @@
         id        = "com.fiou"
         version   = "0.0.2">
 
-    <name>DATALABELLER</name>
+    <name>DataLabeller</name>
 
     <description>
         AN APP PURPOSED FOR LABEL THE DATA OF SCIENTIFIC PROJECTS
