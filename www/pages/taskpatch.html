@@ -457,10 +457,9 @@
 				})
 				$('.back-to-task-list').off('click').on('click', function(){
 					window.particle.pt.loadPage('tasklist')
-					if ($('.extend-menu').hasClass('floatdown')) {
-						$('.extend-menu').removeClass('floatdown').addClass('floatup')
-						$('#oper-skip').fadeIn()
-					}
+					$('.extend-menu').removeClass('floatdown').removeClass('floatup')
+					$('#oper-skip').show()
+					$('#patchInstr').removeClass('floatup').removeClass('floatdown')
 				})
 				if (!localStorage.taskpatchINSTR) {
 					localStorage.taskpatchINSTR = true
