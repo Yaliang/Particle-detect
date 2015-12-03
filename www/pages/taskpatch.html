@@ -353,7 +353,7 @@
 	<div id='menubar' class='full_screen_top menu floatdown'>
 		<div class="row">
 			<div class="col-xs-1"></div>
-			<div id="menu-expose" class="col-xs-2">
+			<div class="col-xs-2 menu-expose">
 				<span class="center-block glyphicon glyphicon-menu-hamburger menubar" aria-hidden="true" data-enhance="false"></span>
 			</div>
 			<div id="task-title" class="col-xs-6">
@@ -434,7 +434,7 @@
 				window.particle.user.confidence = userobj.get('confidence')
 				$(".loginDiag").removeClass('active')
 				window.particle.PatchJS.requestTask()
-				$("#menu-expose").off('click').on('click', function(event){
+				$(".menu-expose").off('click').on('click', function(event){
 					window.particle.setting.expose(event)
 				})
 				$("#task-title").off('click').on('click', function(){

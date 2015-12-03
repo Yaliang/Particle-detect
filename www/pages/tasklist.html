@@ -190,7 +190,7 @@
 	<div id='menubar' class='list-full_screen_top list-menu floatdown'>
 		<div class="row">
 			<div class="col-xs-1"></div>
-			<div id="menu-expose" class="col-xs-2">
+			<div class="col-xs-2 menu-expose">
 				<span class="center-block glyphicon glyphicon-menu-hamburger list-menubar" aria-hidden="true" data-enhance="false"></span>
 			</div>
 			<div class="col-xs-6">
@@ -210,7 +210,7 @@
 			callback: function(userobj) {
 				window.particle.user.confidence = userobj.get('confidence')
 				$(".loginDiag").removeClass('active')
-				$("#menu-expose").off('click').on('click', function(event){
+				$(".menu-expose").off('click').on('click', function(event){
 					window.particle.setting.expose(event)
 				})
 				window.particle.pt.pageStack = []
