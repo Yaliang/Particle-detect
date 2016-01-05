@@ -1,0 +1,3 @@
+[submodule "bin/heroku"]
+  path = bin/heroku
+  url = bin/heroku

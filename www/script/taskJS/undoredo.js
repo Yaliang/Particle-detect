@@ -149,6 +149,7 @@
 	/**
 	 * The function to handle a push into the undo stack
 	 * @param  {Object} options The options for the undoObj
+	 *                          instance: the instance of undoredo object
 	 *                          recover: the function handler of the recovery processing
 	 *                          redo: the function handler that this undo record generated
 	 *                          args: a object includes the parameters for the recover:
@@ -209,10 +210,6 @@
 			/** redo button also need to set inactive */
 			for (var i=0; i < this.redoButton.length; i++) {
 				$(this.redoButton[i]).removeClass('active')
-			}
-			/** enable the reset button after new undo object is pushed */
-			for (var i=0; i < this.resetButton.length; i++) {
-				$(this.resetButton[i]).addClass('active')
 			}
 		}
 		this.undo.push(undoObj)
