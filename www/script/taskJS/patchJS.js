@@ -132,7 +132,6 @@
 			// console.log('only one touch allowed. Left no response.')
 			return
 		}
-
 		window.particle.PatchJS.marker({
 			target: $(window.particle.PatchJS.patchDOM),
 			marker: $(event.target).parent(),
@@ -161,7 +160,6 @@
 			/** the mouse not click down */
 			return
 		}
-
 		window.particle.PatchJS.marker({
 			target: $(window.particle.PatchJS.patchDOM),
 			marker: $(event.target).parent(),
@@ -197,7 +195,6 @@
 	 *  y
 	 */
 	PatchJS.prototype.marker = function(args) {
-
 		var offset = args.target.offset()
 		var displayx = args.clientX - offset.left
 		var displayy = args.clientY - offset.top
@@ -230,7 +227,7 @@
 		if (args.eventType == "move") {
 			/** modify the previous pushed undo function */
 			var originalArgs = args
-			originalArgs.eventType = "moveStart"
+			originalArgs.eventType = "movestart"
 			window.particle.PatchJS.undoredo.replaceUndo({
 				originalArgs: originalArgs,
 				instance: window.particle.PatchJS.undoredo
