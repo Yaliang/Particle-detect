@@ -50,8 +50,8 @@ function getTaskPatch(request, response) {
 		query.find().then(function(patchesObj) {
 			var selectedPatch = patchesObj[0]
 			/** update the present time */
-			selectedPatch.increment("presentTime",1)
-			selectedPatch.save(null)
+			// selectedPatch.increment("presentTime",1)
+			// selectedPatch.save(null)
 			/** format the response object with the required properties */
 			resObj.patchURL = selectedPatch.get("image").url()
 			resObj.patchID = selectedPatch.id
@@ -63,6 +63,56 @@ function getTaskPatch(request, response) {
 			/** add the original object for future usage */
 			resObj.originalObj = selectedPatch
 			response.success(resObj)
+		}, function(error) {
+			response.error(error)
+		})
+	}, function(error) {
+		response.error(error)
+	})
+}
+
+function getTaskReviewPatch(request, response) {
+	var resObj = {}
+	/** fetch a patch task. Response with the object as a taskObj */
+	var Points = Parse.Object.extend("Point")
+	var Patches = Parse.Object.extend("Patch")
+	var query = new Parse.Query(Points)
+	query.ascending("reviewNumber")
+
+	query.first().then(function(point) {
+		resObj.points = []
+		resObj.originalPoints = []
+		/** find the patch */
+		var patchObj = new Patches()
+		patchObj.id = point.get("patch").id
+		patchObj.fetch().then(function(selectedPatch) {
+			resObj.patchURL = selectedPatch.get("image").url()
+			resObj.patchID = selectedPatch.id
+			resObj.patchHeight = selectedPatch.get("sizeHeight")
+			resObj.patchWidth = selectedPatch.get("sizeWidth")
+			resObj.frameX = selectedPatch.get("positionXAtFrame")
+			resObj.frameY = selectedPatch.get("positionYAtFrame")
+			resObj.frameId = selectedPatch.get("frame").id
+			resObj.originalPatch = selectedPatch
+			/** find more points in same patch */
+			var query = new Parse.Query(Points)
+			query.equalTo("patch", patchObj)
+			query.limit(5)
+			query.ascending("reviewNumber")
+
+			query.find().then(function(selectedPoints){
+				resObj.originalPoints = selectedPoints
+				for (var i = 0; i < selectedPoints.length; i++) {
+					resObj.points.push({
+						objectId: selectedPoints[i].id,
+						frameX: selectedPoints[i].get("positionXAtFrame"),
+						frameY: selectedPoints[i].get("positionYAtFrame")
+					})
+				}
+				response.success(resObj)
+			}, function(error) {
+				response.error(error)
+			})
 		}, function(error) {
 			response.error(error)
 		})
@@ -84,6 +134,9 @@ Parse.Cloud.define('getTask', function(request, response) {
 	switch(options.taskType) {
 		case 'patch':
 			getTaskPatch(request, response)
+			break
+		case 'review-patch':
+			getTaskReviewPatch(request, response)
 			break
 		default:
 			response.error({
@@ -214,10 +267,22 @@ function insertPoint(request, response) {
 		unfinished: answer.length
 	}
 
+	/** set a unit set to indicate which patches has increased present time */
+	var u = {}
+
 	/** save all point in the answer set */
 	for (var i=0; i<answer.length; i++) {
 		/** set the patch */
 		patch.id = answer.points[i].patchid
+		/** increase present time */
+		if (!(patch.id in u)) {
+			u[patch.id] = true
+			var query = new Parse.Query(Patches)
+			query.get(patch.id).then(function(patchObj){
+				patchObj.increment("presentTime", 1)
+				patchObj.save(null)
+			})
+		}
 
 		/** save a new point */
 		var point = new Points()
@@ -253,6 +318,7 @@ function insertPoint(request, response) {
 		query.get(answer.patchid, {
 			success: function(patchObj) {
 				console.log('fetch success')
+				patchObj.increment("presentTime", 1)
 				patchObj.increment('noLabelTime', 1)
 				patchObj.save().then(function(){
 					/** response success */
@@ -266,6 +332,14 @@ function insertPoint(request, response) {
 			}
 		})
 	}
+}
+
+function insertPointReview(request, response) {
+	Parse.Cloud.useMasterKey();
+	response.success({
+		code: 200,
+		message: 'blank function'
+	})
 }
 
 Parse.Cloud.define('answerTask', function(request, response) {
@@ -282,6 +356,9 @@ Parse.Cloud.define('answerTask', function(request, response) {
 	switch(options.taskType) {
 		case 'patch':
 			insertPoint(request, response)
+			break
+		case 'review-patch':
+			insertPointReview(request, response)
 			break
 		default:
 			response.error({

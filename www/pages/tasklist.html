@@ -186,6 +186,13 @@
 			</div>
 			<div class="col-xs-1"></div>
 		</div>
+		<div class="row" style='border: 1px solid white; border-top-width: 0;'>
+			<div class="col-xs-1"></div>
+			<div class="col-xs-10 list-task-review-patch">
+				<span class="center-block" style="text-align: center; font-weight: 200; line-height:7vh; font-size: 0.9em; text-shade:0 0 0">REVIEW LABELED PARTICLES</span>
+			</div>
+			<div class="col-xs-1"></div>
+		</div>
 	</div>
 	<div id='menubar' class='list-full_screen_top list-menu floatdown'>
 		<div class="row">
@@ -215,7 +222,12 @@
 				})
 				window.particle.pt.pageStack = []
 				$(".list-task-patch").off('click').on('click', function() {
+					$("#taskreviewpatch").remove()
 					window.particle.pt.loadPage("taskpatch")
+				})
+				$(".list-task-review-patch").off('click').on('click', function() {
+					$("#taskpatch").remove()
+					window.particle.pt.loadPage("taskreviewpatch")
 				})
 				localStorage.currentPage='tasklist'
 			}

@@ -1,4 +1,4 @@
-<pageid>taskpatch</pageid>
+<pageid>taskreviewpatch</pageid>
 <title>Task</title>
 <header>
 	<style type="text/css">
@@ -306,16 +306,15 @@
 	<div id='operations' class='full_screen_bottom operations'>
 		<div class="row">
 			<div class="col-xs-1"></div>
-			<div id="oper-reset" class="col-xs-3">
+			<div id="oper-reject" class="col-xs-2">
 				<span class="center-block glyphicon glyphicon-remove opers" aria-hidden="true" data-enhance="false"></span>
 			</div>
-			<div id="oper-undo" class="col-xs-2">
-				<span class="center-block glyphicon glyphicon-chevron-left opers" aria-hidden="true" data-enhance="false"></span>
+			<div id="oper-hide" class="col-xs-6">
+				<button style="line-height: 8vh; width: 100%; background-color: initial; outline: 0; box-shadow: none;" class="btn hide-hide" type="button" data-enhance="false">Hide Marker</button>
+				<button style="line-height: 8vh; width: 100%; background-color: initial; outline: 0; box-shadow: none;" class="btn hide-show" type="button" data-enhance="false">Show Marker</button>
+				<!-- <span class="center-block opers" aria-hidden="true" data-enhance="false">Original</span> -->
 			</div>
-			<div id="oper-redo" class="col-xs-2">
-				<span class="center-block glyphicon glyphicon-chevron-right opers" aria-hidden="true" data-enhance="false"></span>
-			</div>
-			<div id="oper-done" class="col-xs-3">
+			<div id="oper-accept" class="col-xs-2">
 				<span class="center-block glyphicon glyphicon-ok opers" aria-hidden="true" data-enhance="false"></span>
 			</div>
 			<div class="col-xs-1"></div>
@@ -358,7 +357,7 @@
 				<span class="center-block glyphicon glyphicon-menu-hamburger menubar" aria-hidden="true" data-enhance="false"></span>
 			</div>
 			<div id="task-title" class="col-xs-6">
-				<span class="center-block" style="text-align: center; font-weight: 200; line-height:7vh; font-size: 0.9em; text-shadow:0 0 0">LABEL PARTICLES</span>
+				<span class="center-block" style="text-align: center; font-weight: 200; line-height:7vh; font-size: 0.9em; text-shadow:0 0 0">REVIEW LABELS</span>
 			</div>
 			<div id="oper-skip" class="col-xs-2">
 				<span class="center-block menubar" style="text-align: center; line-height:7vh; font-size: 0.9em; text-shade:0 0 0; zoom:1">Skip</span>
@@ -367,10 +366,10 @@
 			<div class="col-xs-1"></div>
 		</div>
 	</div>
-	<div id='patchImage' class='full_screen_black'>
+	<div id='reviewPatchImage' class='full_screen_black'>
 	</div>
-	<div class='pointCenter hidden'>
-		<img src='./image/red-point-31.png' width='31' height='31'/>
+	<div id='review-point' class='pointCenter hidden'>
+		<img src='./image/red-circle-31.png' width='31' height='31'/>
 	</div>
 
 	<div id='patchInstr' class='patch_Instr full_screen_black'>
@@ -383,22 +382,22 @@
 			<!-- Indicators -->
 			<ol class="carousel-indicators">
 				<li data-target="#carousel-instr" data-slide-to="0" class="active"></li>
-				<li data-target="#carousel-instr" data-slide-to="1"></li>
+				<!-- <li data-target="#carousel-instr" data-slide-to="1"></li>
 				<li data-target="#carousel-instr" data-slide-to="2"></li>
 				<li data-target="#carousel-instr" data-slide-to="3"></li>
 				<li data-target="#carousel-instr" data-slide-to="4"></li>
 				<li data-target="#carousel-instr" data-slide-to="5"></li>
-				<li data-target="#carousel-instr" data-slide-to="6"></li>
+				<li data-target="#carousel-instr" data-slide-to="6"></li> -->
 			</ol>
 			<!-- Wrapper for slides -->
 			<div class="carousel-inner" role="listbox">
 				<div class="item active item-0"></div>
-				<div class="item item-1"></div>
+				<!-- <div class="item item-1"></div>
 				<div class="item item-2"></div>
 				<div class="item item-3"></div>
 				<div class="item item-4"></div>
 				<div class="item item-5"></div>
-				<div class="item item-6"></div>
+				<div class="item item-6"></div> -->
 			</div>
 		</div>
 	</div>
@@ -413,12 +412,12 @@
 				$('.extend-menu').removeClass('floatdown').addClass('floatup')
 				$('#oper-skip').fadeIn()
 			}
-			for (var i=0; i<=6; i++) {
+			for (var i=0; i<=0; i++) {
 				var imageDOM = new Image()
 				imageDOM.onload = function() {
 					$(this).fadeIn()
 				}
-				imageDOM.src = './image/instr/patch/File_0'+i.toString()+'.png'
+				imageDOM.src = './image/instr/reviewpatch/File_0'+i.toString()+'.png'
 				$(imageDOM).hide()
 				$(imageDOM).on('swipeleft', function(){
 					$('.carousel').carousel('next')
@@ -434,7 +433,7 @@
 			callback: function(userobj) {
 				window.particle.user.confidence = userobj.get('confidence')
 				$(".loginDiag").removeClass('active')
-				window.particle.PatchJS.requestTask()
+				window.particle.ReviewPatchJS.requestTask()
 				$(".menu-expose").off('click').on('click', function(event){
 					window.particle.setting.expose(event)
 				})
@@ -462,11 +461,11 @@
 					$('#oper-skip').show()
 					$('#patchInstr').removeClass('floatup').removeClass('floatdown')
 				})
-				if (!localStorage.taskpatchINSTR) {
-					localStorage.taskpatchINSTR = true
+				if (!localStorage.taskreviewpatchINSTR) {
+					localStorage.taskreviewpatchINSTR = true
 					instrShow()
 				}
-				localStorage.currentPage='taskpatch'
+				localStorage.currentPage='taskreviewpatch'
 			}
 		})
 		

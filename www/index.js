@@ -189,5 +189,6 @@ setting = {
 window.particle = {}
 window.particle.DataService = DataService.init()
 window.particle.PatchJS = PatchJS.init()
+window.particle.ReviewPatchJS = ReviewPatchJS.init()
 window.particle.user = user
 window.particle.setting = setting
