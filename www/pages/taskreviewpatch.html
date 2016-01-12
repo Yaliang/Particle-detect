@@ -382,22 +382,22 @@
 			<!-- Indicators -->
 			<ol class="carousel-indicators">
 				<li data-target="#carousel-instr" data-slide-to="0" class="active"></li>
-				<li data-target="#carousel-instr" data-slide-to="1"></li>
+				<!-- <li data-target="#carousel-instr" data-slide-to="1"></li>
 				<li data-target="#carousel-instr" data-slide-to="2"></li>
 				<li data-target="#carousel-instr" data-slide-to="3"></li>
 				<li data-target="#carousel-instr" data-slide-to="4"></li>
 				<li data-target="#carousel-instr" data-slide-to="5"></li>
-				<li data-target="#carousel-instr" data-slide-to="6"></li>
+				<li data-target="#carousel-instr" data-slide-to="6"></li> -->
 			</ol>
 			<!-- Wrapper for slides -->
 			<div class="carousel-inner" role="listbox">
 				<div class="item active item-0"></div>
-				<div class="item item-1"></div>
+				<!-- <div class="item item-1"></div>
 				<div class="item item-2"></div>
 				<div class="item item-3"></div>
 				<div class="item item-4"></div>
 				<div class="item item-5"></div>
-				<div class="item item-6"></div>
+				<div class="item item-6"></div> -->
 			</div>
 		</div>
 	</div>
@@ -412,12 +412,12 @@
 				$('.extend-menu').removeClass('floatdown').addClass('floatup')
 				$('#oper-skip').fadeIn()
 			}
-			for (var i=0; i<=6; i++) {
+			for (var i=0; i<=0; i++) {
 				var imageDOM = new Image()
 				imageDOM.onload = function() {
 					$(this).fadeIn()
 				}
-				imageDOM.src = './image/instr/patch/File_0'+i.toString()+'.png'
+				imageDOM.src = './image/instr/reviewpatch/File_0'+i.toString()+'.png'
 				$(imageDOM).hide()
 				$(imageDOM).on('swipeleft', function(){
 					$('.carousel').carousel('next')
@@ -461,8 +461,8 @@
 					$('#oper-skip').show()
 					$('#patchInstr').removeClass('floatup').removeClass('floatdown')
 				})
-				if (!localStorage.taskpatchINSTR) {
-					localStorage.taskpatchINSTR = true
+				if (!localStorage.taskreviewpatchINSTR) {
+					localStorage.taskreviewpatchINSTR = true
 					instrShow()
 				}
 				localStorage.currentPage='taskreviewpatch'
