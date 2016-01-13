@@ -190,12 +190,16 @@
 
 				/** set the accept button event */
 				$(window.particle.ReviewPatchJS.acceptSelector).off('click').on('click', function() {
-					window.particle.ReviewPatchJS.answer('accept')
+					window.particle.ReviewPatchJS.answer({
+						answerType: 'accept'
+					})
 				}).addClass('active')
 
 				/** set the reject button event */
 				$(window.particle.ReviewPatchJS.rejectSelector).off('click').on('click', function() {
-					window.particle.ReviewPatchJS.answer('reject')
+					window.particle.ReviewPatchJS.answer({
+						answerType: 'reject'
+					})
 				}).addClass('active')
 
 
@@ -204,7 +208,9 @@
 
 				/** set the skip button event */
 				$(window.particle.ReviewPatchJS.skipSelector).off('click').on('click', function() {
-					window.particle.ReviewPatchJS.answer('skip')
+					window.particle.ReviewPatchJS.answer({
+						answerType: 'skip'
+					})
 				}).addClass('active')
 
 				/** display the next point */
@@ -235,8 +241,17 @@
 			/** add the image element into destination container */
 			options.dest.append($(imageDOM))
 		}
+	}
 
-		
+	/**
+	 * The function to load the failure message. When the failure appears at server, display this message and give options to user
+	 * @param  {Object} options The error object from server
+	 * @return {[type]}         [description]
+	 */
+	ReviewPatchJS.prototype.loadFailureMessage = function(options) {
+		options = options || {}
+		console.log(options)
+		$('#errorBox').addClass('active')
 	}
 
 	/**
@@ -251,6 +266,7 @@
 		this.points = []
 		options.dest = this.patchContainer || $(this.defaultContainerSelector)
 		options.callback = this.loadPatchAndPoints
+		options.errorHandler = this.loadFailureMessage
 		window.particle.DataService.getTask(options)
 	}
 
@@ -266,7 +282,7 @@
 			return true
 		}
 		var answer = {
-			pointid: window.particle.ReviewPatchJS.currentPoint.id,
+			pointid: window.particle.ReviewPatchJS.currentPoint.objectId,
 			confidenceAtCreated: window.particle.user.confidence
 		}
 		if (obj.answerType == 'accept') {

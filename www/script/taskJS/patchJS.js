@@ -394,6 +394,17 @@
 	}
 
 	/**
+	 * The function to load the failure message. When the failure appears at server, display this message and give options to user
+	 * @param  {Object} options The error object from server
+	 * @return {[type]}         [description]
+	 */
+	PatchJS.prototype.loadFailureMessage = function(options) {
+		options = options || {}
+		console.log(options)
+		$('#errorBox').addClass('active')
+	}
+
+	/**
 	 * The function call the DataService function to get a "patch" task
 	 * @param  {Object} options The options for this function
 	 *                          Left for future usage
@@ -407,6 +418,7 @@
 		}
 		options.dest = this.patchContainer || $(this.defaultContainerSelector)
 		options.callback = this.loadPatch
+		options.errorHandler = this.loadFailureMessage
 		window.particle.DataService.getTask(options)
 	}
 

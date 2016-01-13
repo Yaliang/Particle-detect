@@ -401,10 +401,16 @@
 			</div>
 		</div>
 	</div>
+	<div id="errorBox" class='errorDiag' data-enhance='false'>
+        <div class='diagbox'>
+            <p style='font-weight: bold; font-size: 0.8em'>NO TASK INSTANCE AVAILABLE. GO BACK TO TASK LIST AND TRY OTHER TASKS.</p>
+            </br>
+            <button type="button" class="btn back-to-task-list" style="display:block; margin-left: auto; margin-right: auto; color: white; border: 1px solid; background-color: #337ab7; width: 80%; line-height: 1.5em" data-enhance="false">BACK</button>
+        </div>
+    <div>
 </main>
 <footer>
 	<script type="text/javascript">
-
 		function instrShow() {
 			$('#patchInstr').removeClass('floatdown').addClass('floatup')
 			$('.carousel').carousel(0)
@@ -433,6 +439,7 @@
 			callback: function(userobj) {
 				window.particle.user.confidence = userobj.get('confidence')
 				$(".loginDiag").removeClass('active')
+				$("#errorBox").removeClass('active')
 				window.particle.ReviewPatchJS.requestTask()
 				$(".menu-expose").off('click').on('click', function(event){
 					window.particle.setting.expose(event)
@@ -460,6 +467,9 @@
 					$('.extend-menu').removeClass('floatdown').removeClass('floatup')
 					$('#oper-skip').show()
 					$('#patchInstr').removeClass('floatup').removeClass('floatdown')
+					if ($('#errorBox').hasClass('active')) {
+						$('#taskreviewpatch').remove()
+					}
 				})
 				if (!localStorage.taskreviewpatchINSTR) {
 					localStorage.taskreviewpatchINSTR = true
