@@ -8,7 +8,7 @@ The labeled data are supposed to learn and test the strategy for detecting parti
 The particles, like small piece of glass, iron or plastic, may introduced in any step to build an IV bag with medical liquid. 
 For quality requirement, the current solution at Baxter is checking with experienced labors, which is expensive and unreliable.
 The alternative solution is testing everything with computer vision. 
-As a necessary step, we waht collect data in the captured image with true ground truth so that we could learn the model and evaluate our algorithm 
+As a necessary step, we what to collect data in the captured image with true ground truth so that we could learn the model and evaluate our algorithm 
 
 For this demand, we divide the whole question into small pieces so that we can label our data anytime, anywhere. 
 For the first step, we build the task to label particle candidate which is usually looks similar as a point with highlight in a small patch at captured image.
