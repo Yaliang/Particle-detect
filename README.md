@@ -11,7 +11,7 @@ The alternative solution is testing everything with computer vision.
 As a necessary step, we what to collect data in the captured image with true ground truth so that we could learn the model and evaluate our algorithm 
 
 For this demand, we divide the whole question into small pieces so that we can label our data anytime, anywhere. 
-For the first step, we build the task to label particle candidate which is usually looks similar as a point with highlight in a small patch at captured image.
+For the first step, we build the task to label particle candidate which is usually looks similar as a light point in a small patch at captured image.
 The review for the submission are also built so that we can remove the potential mislabelled data from the participants. 
 View the snapshoot and description in the application store and try it today.
 
