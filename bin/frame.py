@@ -6,6 +6,10 @@ from multiprocessing import Pool
 import json, httplib
 import os
 
+## set up connection configuration
+appID = "7JSMjdDlgmtsWgGY5LOPMm3tCluhAo7Wmuu9MLpf"
+# RESTID = "fgj81WHdh1pAIAoyEXg8HyElsT0nmmxgAg9vhykD"
+
 def checkContent(args):
     """ the function to remove some type of patches out of dataset """
     # parse data
@@ -71,10 +75,6 @@ def uploadPatch(args):
     ## save the data as file
     misc.imsave(fileName, clipImg)
 
-    ## set up connection configuration
-    appID = "7JSMjdDlgmtsWgGY5LOPMm3tCluhAo7Wmuu9MLpf"
-    RESTID = "fgj81WHdh1pAIAoyEXg8HyElsT0nmmxgAg9vhykD"
-
     ## set up connection
     connection = httplib.HTTPSConnection('api.parse.com', 443)
     connection.connect()
@@ -125,10 +125,6 @@ def processFrame(args):
 
     ## parse the image from file
     img = misc.imread(filePath)
-
-    ## set up connection configuration
-    appID = "7JSMjdDlgmtsWgGY5LOPMm3tCluhAo7Wmuu9MLpf"
-    RESTID = "fgj81WHdh1pAIAoyEXg8HyElsT0nmmxgAg9vhykD"
 
     ## set up connection
     connection = httplib.HTTPSConnection('api.parse.com', 443)

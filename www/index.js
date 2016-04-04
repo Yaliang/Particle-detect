@@ -1,9 +1,19 @@
 Parse.initialize("7JSMjdDlgmtsWgGY5LOPMm3tCluhAo7Wmuu9MLpf", "75P9wy6X6guG9HRUvMxcVueLjZ93ljY56z3jrgAN");
 
+window.fbAsyncInit = function() {
+	Parse.FacebookUtils.init({ // this line replaces FB.init({
+		appId      : '1140462595994073', // Facebook App ID
+		status     : true,  // check Facebook Login status
+		cookie     : true,  // enable cookies to allow Parse to access the session
+		xfbml      : true,  // initialize Facebook social plugins on the page
+		version    : 'v2.3' // point to the latest Facebook Graph API version
+	});
+}
+
 $(document).on("mobileinit", function()  {
-  $.mobile.ajaxEnabled = true;
-  $.support.cors = true;
-  $.mobile.allowCrossDomainPages = true;
+	$.mobile.ajaxEnabled = true;
+	$.support.cors = true;
+	$.mobile.allowCrossDomainPages = true;
 });
 
 user = {
