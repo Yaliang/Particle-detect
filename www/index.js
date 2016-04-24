@@ -1,9 +1,19 @@
 Parse.initialize("7JSMjdDlgmtsWgGY5LOPMm3tCluhAo7Wmuu9MLpf", "75P9wy6X6guG9HRUvMxcVueLjZ93ljY56z3jrgAN");
 
+window.fbAsyncInit = function() {
+	Parse.FacebookUtils.init({ // this line replaces FB.init({
+		appId      : '1140462595994073', // Facebook App ID
+		status     : true,  // check Facebook Login status
+		cookie     : true,  // enable cookies to allow Parse to access the session
+		xfbml      : true,  // initialize Facebook social plugins on the page
+		version    : 'v2.3' // point to the latest Facebook Graph API version
+	});
+}
+
 $(document).on("mobileinit", function()  {
-  $.mobile.ajaxEnabled = true;
-  $.support.cors = true;
-  $.mobile.allowCrossDomainPages = true;
+	$.mobile.ajaxEnabled = true;
+	$.support.cors = true;
+	$.mobile.allowCrossDomainPages = true;
 });
 
 user = {
@@ -26,8 +36,8 @@ user = {
 				if (error.code == '410') {
 					/** no user setup info exist */
 					$(".loginDiag").removeClass('active')
-					$(".diagbox").show()
-					$(".diagbox_input").css("transform", "rotateX(90deg)")
+					$(".loginDiag > .diagbox").show()
+					$(".loginDiag > .diagbox_input").css("transform", "rotateX(90deg)")
 					$('body').append($(".loginDiag"))
 					$(".loginDiag").addClass('active')
 					$("#newSession").off('click').on('click', function(){
@@ -49,13 +59,13 @@ user = {
 						$("#loginerror").html("")
 						$("#input_id").val("")
 						$("#input_token").val("")
-						$(".diagbox").hide()
-						$(".diagbox_input").css("transform", "rotateX(0deg)")
+						$(".loginDiag > .diagbox").hide()
+						$(".loginDiag > .diagbox_input").css("transform", "rotateX(0deg)")
 					})
 					$("#backNewSession").off('click').on('click', function(){
-						$(".diagbox_input").css("transform", "rotateX(90deg)")
+						$(".loginDiag > .diagbox_input").css("transform", "rotateX(90deg)")
 						setTimeout(function(){
-							$(".diagbox").show()
+							$(".loginDiag > .diagbox").show()
 						}, 600)
 					})
 					$("#verifySession").off('click').on('click', function(event){
@@ -170,14 +180,14 @@ setting = {
 		$("#menu-expose-origin").css("top", event.clientY.toString()+"px")
 		$("#menu-expose-origin").addClass("exposing")
 		setTimeout(function() {
-			$(".settingDiag").removeClass('active').off('click').on('click', function(){
-				$(".settingDiag").removeClass('active')
+			$("#setting").removeClass('active').off('click').on('click', function(){
+				$("#setting").removeClass('active')
 			})
-			$(".setdiagbox").show().off('click').on('click', function(e){
+			$("#setting > .diagbox").show().off('click').on('click', function(e){
 				e.stopPropagation()
 			})
-			$('body').append($(".settingDiag"))
-			$(".settingDiag").addClass('active')
+			$('body').append($("#setting"))
+			$("#setting").addClass('active')
 			$("#setting_id").html("<span style='text-weight: bold; margin-left:5%; width: 10%; display: inline-block; text-align:left;'>id:</span><span style=' display: inline-block; width: 80%; text-align:right;'>"+localStorage.username+"</span>")
 			$("#setting_token").html("<span style='text-weight: bold; margin-left:5%; width: 30%; display: inline-block; text-align:left;'>token:</span><span style=' display: inline-block; width: 60%; text-align:right;'>"+localStorage.password+"</span>")
 			$("#setting_confidence").html("<span style='text-weight: bold; margin-left: 5%; width: 50%;  display: inline-block;'>confidence:</span><span style=' display: inline-block; width: 40%; text-align:right;'>"+window.particle.user.confidence.toString()+"</span>")

@@ -53,7 +53,7 @@
     font-family: "Open Sans","Helvetica Neue",Helvetica,Arial,sans-serif;
 }
 
-.loginDiag, .settingDiag {
+.loginDiag, .settingDiag, .errorDiag{
     position: fixed;
     left: 0;
     top: 0;
@@ -70,7 +70,7 @@
     animation: fadeIn 1500ms 0ms forwards;
 }
 
-.settingDiag.active {
+.settingDiag.active, .errorDiag.active {
     display:block;
     z-index: 3000;
     opacity: 1;
@@ -85,7 +85,7 @@
     }
 }
 
-.diagbox, .setdiagbox {
+.diagbox{
     opacity: 0;
     margin-top: 35vh;
     color: #555;
@@ -106,7 +106,7 @@
     transform-style: preserve-3d;
 }
 
-.active .diagbox,  .active .setdiagbox{
+.active .diagbox{
     animation: fadeIn 800ms 0ms forwards,
                 diagboxFloatUp 800ms 0ms forwards;
 }
