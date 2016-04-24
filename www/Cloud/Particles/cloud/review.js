@@ -59,6 +59,7 @@ var insertPointReview = function(request, response) {
 	var answer = JSON.parse(request.params.answer)
 	var Reviews = Parse.Object.extend("Review")
 	var Points = Parse.Object.extend("Point")
+	var Users = Parse.Object.extend("User")
 
 	/** build the point that the review point to */
 	var point = new Points()
@@ -90,13 +91,35 @@ var insertPointReview = function(request, response) {
 			/** calculate the new confidence */
 			var newConfidence = (1.0 * (curtReviewNums + 1) * curtConfidence + (0.5 + newDecision * newDecisionConfidence)) / (curtReviewNums + 2)
 			/** update the confidence value */
-			point.set('confidence', newConfidence)
+			point.increment('confidence', newConfidence - curtConfidence)
 			/** update the review number */
 			point.increment('reviewNumber', 1)
 			point.save().then(function(point) {
-				response.success({
-					code: 200,
-					message: 'new review is saved and the confidence of point is updated.'
+				console.log('save confidence success')
+				/** update user's confidence */
+				var user_id = point.get('user').id
+				var query = new Parse.Query(Points)
+				var user = new Users()
+				user.set('objectId', user_id)
+				query.equalTo('user', user)
+				query.count().then(function(count) {
+					console.log('count number success')
+					var query = new Parse.Query(Users)
+					query.get(user_id).then(function(user) {
+						user.increment('confidence', (newConfidence - curtConfidence) / count)
+						user.save().then(function(user) {
+							response.success({
+								code: 200,
+								message: 'new review is saved and the confidence of point and user is updated.'
+							})
+						}, function(error) {
+							response.error(error)
+						})
+					}, function(error) {
+						response.error(error)
+					})
+				}, function(error) {
+					response.error(error)
 				})
 			}, function(error){
 				response.error(error)

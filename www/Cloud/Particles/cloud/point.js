@@ -35,31 +35,32 @@ var getTaskPatch = function(request, response) {
 var findSuperPoint = function(point, response, o) {
 	Parse.Cloud.useMasterKey();
 
-	var baseTolerance = 4
-	var SuperPoint = Parse.Object.extend('SuperPoint')
-	var query = new Parse.Query(SuperPoint)
-	var p_x = point.get('positionXAtFrame')
-	var p_y = point.get('positionYAtFrame')
+	point.get('patch').fetch().then(function(patch) {
+		var frame = patch.get('frame')
+		var baseTolerance = 4
+		var SuperPoint = Parse.Object.extend('SuperPoint')
+		var query = new Parse.Query(SuperPoint)
+		var p_x = point.get('positionXAtFrame')
+		var p_y = point.get('positionYAtFrame')
 
-	/** set ACL */
-	var acl_readonly = new Parse.ACL()
-	acl_readonly.setPublicReadAccess(true)
+		/** set ACL */
+		var acl_readonly = new Parse.ACL()
+		acl_readonly.setPublicReadAccess(true)
 
-	/** find the super points in the base tolerance range */
-	query.greaterThan("meanPositionXAtFrame", p_x - baseTolerance)
-	query.lessThan("meanPositionXAtFrame", p_x + baseTolerance)
-	query.greaterThan("meanPositionYAtFrame", p_y - baseTolerance)
-	query.lessThan("meanPositionYAtFrame", p_y + baseTolerance)
+		/** find the super points in the base tolerance range */
+		query.greaterThan("meanPositionXAtFrame", p_x - baseTolerance)
+		query.lessThan("meanPositionXAtFrame", p_x + baseTolerance)
+		query.greaterThan("meanPositionYAtFrame", p_y - baseTolerance)
+		query.lessThan("meanPositionYAtFrame", p_y + baseTolerance)
+		query.equalTo("frame", frame)
 
-	query.find().then(function(superPoints){
-		if (superPoints.length == 0) {
-			// create a new super point when no super point exist
-			var newSP = new SuperPoint()
-			newSP.set("meanPositionXAtFrame", p_x)
-			newSP.set("meanPositionYAtFrame", p_y)
-			newSP.setACL(acl_readonly)
-			var point_patch = point.get('patch')
-			point_patch.fetch().then(function(patch) {
+		query.find().then(function(superPoints){
+			if (superPoints.length == 0) {
+				// create a new super point when no super point exist
+				var newSP = new SuperPoint()
+				newSP.set("meanPositionXAtFrame", p_x)
+				newSP.set("meanPositionYAtFrame", p_y)
+				newSP.setACL(acl_readonly)
 				newSP.set('frame', patch.get('frame'))
 				newSP.save().then(function(sp) {
 					point.set('superPoint', sp)
@@ -73,54 +74,55 @@ var findSuperPoint = function(point, response, o) {
 							})
 						}
 					})
-				})
-			})
-			
-		} else {
-			// find the best match
-			var closest = 0
-			var minDis = 1000000
-			for (var i=0; i<superPoints.length; i++) {
-				var nowSP = superPoints[i]
-				var nowSP_x = nowSP.get('meanPositionXAtFrame')
-				var nowSP_y = nowSP.get('meanPositionYAtFrame')
-				var dis = Math.sqrt((nowSP_x - p_x) * (nowSP_x - p_x) + (nowSP_y - p_y) * (nowSP_y - p_y))
-				if (dis < minDis) {
-					closest = i
-					minDis = dis
-				}
-			}
-			// store and update
-			point.set('superPoint', superPoints[closest])
-			point.save().then(function(point) {
-				var Point = Parse.Object.extend("Point")
-				var newquery = new Parse.Query(Point)
-
-				newquery.equalTo('superPoint', superPoints[closest])
-
-				newquery.find().then(function(points) {
-					var sum_x = 0.0
-					var sum_y = 0.0
-					for (var j = 0; j < points.length; j++) {
-						sum_x += points[j].get('positionXAtFrame')
-						sum_y += points[j].get('positionYAtFrame')
+				})				
+			} else {
+				// find the best match
+				var closest = 0
+				var minDis = 1000000
+				for (var i=0; i<superPoints.length; i++) {
+					var nowSP = superPoints[i]
+					var nowSP_x = nowSP.get('meanPositionXAtFrame')
+					var nowSP_y = nowSP.get('meanPositionYAtFrame')
+					var dis = Math.sqrt((nowSP_x - p_x) * (nowSP_x - p_x) + (nowSP_y - p_y) * (nowSP_y - p_y))
+					if (dis < minDis) {
+						closest = i
+						minDis = dis
 					}
-					superPoints[closest].set('meanPositionXAtFrame', sum_x / points.length)
-					superPoints[closest].set('meanPositionYAtFrame', sum_y / points.length)
-					superPoints[closest].save().then(function(){
-						o.unfinished -= 1
-						if (o.unfinished <= 0) {
-							/** response success */
-							response.success({
-								code: '200',
-								message: 'All answer are saved. At least one Super Point is updated.'
-							})
+				}
+				// store and update
+				point.set('superPoint', superPoints[closest])
+				point.save().then(function(point) {
+					var Point = Parse.Object.extend("Point")
+					var newquery = new Parse.Query(Point)
+
+					newquery.equalTo('superPoint', superPoints[closest])
+
+					newquery.find().then(function(points) {
+						var sum_x = 0.0
+						var sum_y = 0.0
+						for (var j = 0; j < points.length; j++) {
+							sum_x += points[j].get('positionXAtFrame')
+							sum_y += points[j].get('positionYAtFrame')
 						}
+						superPoints[closest].set('meanPositionXAtFrame', sum_x / points.length)
+						superPoints[closest].set('meanPositionYAtFrame', sum_y / points.length)
+						superPoints[closest].save().then(function(){
+							o.unfinished -= 1
+							if (o.unfinished <= 0) {
+								/** response success */
+								response.success({
+									code: '200',
+									message: 'All answer are saved. At least one Super Point is updated.'
+								})
+							}
+						})
 					})
 				})
-			})
-		}
+			}
+		})
 	})
+
+	
 }
 
 var insertPoint = function(request, response) {
