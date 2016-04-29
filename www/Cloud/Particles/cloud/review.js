@@ -83,13 +83,14 @@ var insertPointReview = function(request, response) {
 		query.get(point.id).then(function(point){
 			var curtReviewNums = point.get('reviewNumber')
 			var curtConfidence = point.get('confidence')
-			var newDecision = 0.5
 			var newDecisionConfidence = answer.confidenceAtCreated
-			if (answer.decision == false) {
-				newDecision = -0.5
-			}
 			/** calculate the new confidence */
-			var newConfidence = (1.0 * (curtReviewNums + 1) * curtConfidence + (0.5 + newDecision * newDecisionConfidence)) / (curtReviewNums + 2)
+			var newConfidence = curtConfidence
+			if (answer.decision == false) {
+				newConfidence = 1.0 / (1.0 + (1.0 - curtConfidence) / curtConfidence * newDecisionConfidence / (1.0 - newDecisionConfidence))
+			} else if (answer.decision == true) {
+				newConfidence = 1.0 / (1.0 + (1.0 - curtConfidence) / curtConfidence * (1.0 - newDecisionConfidence) / newDecisionConfidence)
+			}
 			/** update the confidence value */
 			point.increment('confidence', newConfidence - curtConfidence)
 			/** update the review number */
